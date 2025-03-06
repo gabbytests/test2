@@ -127,25 +127,23 @@ if (removeAllBtn) {
 
     document.querySelectorAll(".add-to-cart").forEach((button) => {
         button.addEventListener("click", (e) => {
-            const btn = e.currentTarget;
-            const name = btn.getAttribute("data-name");
-            const price = parseFloat(btn.getAttribute("data-price"));
-            const image = btn.getAttribute("data-image") || "";
-
-            if (!name || isNaN(price)) return;
-
-            const existing = cart.find(item => item.name === name);
-            if (existing) {
-                existing.quantity++;
-            } else {
-                cart.push({ name, price, quantity: 1, image });
-            }
-
-            updateCartDisplay();
-            showNotification(`${name} added to cart`);
+          const btn = e.currentTarget;
+          const id = btn.getAttribute("data-product-id");
+          const name = btn.getAttribute("data-name");
+          const price = parseFloat(btn.getAttribute("data-price"));
+          const image = btn.getAttribute("data-image") || "";
+          if (!id || !name || isNaN(price)) return;
+          const existing = cart.find(item => item.id === id);
+          if (existing) {
+            existing.quantity++;
+          } else {
+            cart.push({ id, name, price, quantity: 1, image });
+          }
+          updateCartDisplay();
+          showNotification(`${name} added to cart`);
         });
-    });
-
+      });
+      
     cartIcon.addEventListener("click", (event) => {
         event.stopPropagation();
         cartSidebar.classList.add("cart-visible");

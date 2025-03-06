@@ -1294,8 +1294,6 @@ Item added to your cart
           <link href="cdn/shop/t/1/assets/component-price.css@v=70172745017360139101736814350.css" rel="stylesheet" type="text/css" media="all" />
           <link href="cdn/shop/t/1/assets/template-collection.css@v=58558206033505836701736814353.css" rel="stylesheet" type="text/css" media="all" />
           <link href="cdn/shop/t/1/assets/quick-add.css@v=66647833350618835731736814353.css" rel="stylesheet" type="text/css" media="all" />
-          <script src="cdn/shop/t/1/assets/product-form.js@v=82553749319723712671736814352" defer="defer"></script>
-          <script src="cdn/shop/t/1/assets/quick-add.js@v=73073840428863680991736814353" defer="defer"></script>
           <style data-shopify>
             .section-template--16088786534534__featured_collection-padding {
               padding-top: 33px;
@@ -1360,22 +1358,22 @@ Item added to your cart
               padding: 8px;
             }
           </style>
-          <div class="color-scheme-2 isolate gradient">
-            <div class="collection section-template--16088786534534__featured_collection-padding" id="collection-template--16088786534534__featured_collection">
-              <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
-                <h2 class="title inline-richtext h1 scroll-trigger animate--slide-in">
-                  <strong>FEATURED PRODUCTS</strong>
-                </h2>
-              </div>
-              <div class="page-width">
-                <ul class="four-two-grid" id="product-list" role="list"></ul>
-              </div>
+         <div class="color-scheme-2 isolate gradient">
+          <div class="collection section-template--16088786534534__featured_collection-padding" id="collection-template--16088786534534__featured_collection">
+            <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
+              <h2 class="title inline-richtext h1 scroll-trigger animate--slide-in">
+                <strong>FEATURED PRODUCTS</strong>
+              </h2>
+            </div>
+            <div class="page-width">
+              <ul class="four-two-grid" id="product-list" role="list"></ul>
             </div>
           </div>
+        </div>
         </section>
 
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
         <script>
           const firebaseConfig = {
             apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
@@ -1387,15 +1385,22 @@ Item added to your cart
             appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
             measurementId: "G-WNJ376BBZF"
           };
-          firebase.initializeApp(firebaseConfig);
-          const db = firebase.database();
-          const productsRef = db.ref('products');
-      
-          async function loadProducts() {
+        
+          try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized successfully in index.html");
+          } catch (error) {
+            console.error("Firebase initialization failed:", error);
+          }
+        
+          function loadProducts() {
             const productList = document.getElementById("product-list");
+            productList.innerHTML = "Loading products...";
+            const productsRef = firebase.database().ref('products');
             productsRef.on('value', (snapshot) => {
               productList.innerHTML = "";
               const products = snapshot.val();
+              console.log("Fetched products:", products);
               if (products) {
                 Object.keys(products).forEach((id, index) => {
                   const product = products[id];
@@ -1409,7 +1414,7 @@ Item added to your cart
                         <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
                           <div class="card__media">
                             <div class="media media--transparent media--hover-effect">
-                              <img src="${product.image}" alt="${product.name}" class="motion-reduce" loading="eager">
+                              <img src="${product.image || ''}" alt="${product.name}" class="motion-reduce" loading="eager">
                             </div>
                           </div>
                         </div>
@@ -1430,28 +1435,16 @@ Item added to your cart
                             </div>
                           </div>
                           <div class="quick-add no-js-hidden">
-                            <product-form data-section-id="template--16088786534534__featured_collection">
-                              <button
-                                type="submit"
-                                name="add"
-                                class="add-to-cart quick-add__submit button button--full-width button--secondary"
-                                aria-haspopup="dialog"
-                                aria-live="polite"
-                                data-sold-out-message="true"
-                                data-product-id="${product.id}"
-                                data-name="${product.name}"
-                                data-price="${product.price}"
-                                data-image="${product.image}"
-                              >
-                                <span>Add to cart</span>
-                                <span class="sold-out-message hidden">Sold out</span>
-                                <div class="loading__spinner hidden">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="spinner" viewBox="0 0 66 66">
-                                    <circle stroke-width="6" cx="33" cy="33" r="30" fill="none" class="path"/>
-                                  </svg>
-                                </div>
-                              </button>
-                            </product-form>
+                            <button
+                              type="button"
+                              class="add-to-cart quick-add__submit button button--full-width button--secondary"
+                              data-product-id="${product.id}"
+                              data-name="${product.name}"
+                              data-price="${product.price}"
+                              data-image="${product.image || ''}"
+                            >
+                              Add to Cart
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1459,17 +1452,20 @@ Item added to your cart
                   `;
                   productList.appendChild(li);
                 });
+              } else {
+                productList.innerHTML = "No products available.";
               }
-              if (window.initializeCartListeners) {
-                window.initializeCartListeners();
-              }
+            }, (error) => {
+              console.error("Error fetching products:", error);
+              productList.innerHTML = "Failed to load products.";
             });
           }
-      
-          document.addEventListener("DOMContentLoaded", loadProducts);
+        
+          document.addEventListener("DOMContentLoaded", () => {
+            console.log("DOM loaded, calling loadProducts");
+            loadProducts();
+          });
         </script>
-
-
 
 
 
@@ -1934,91 +1930,96 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
 });
 </script>
 <script>
-  async function loadProducts() {
-    const productList = document.getElementById("product-list");
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    
-    // Fallback to static products if CMS is empty
-    if (products.length === 0) {
-      products = [
-        { id: "1", name: "Tight Cropped Fleece", price: 49.99, image: "https://gabbytests.github.io/test1/img/pd5.jpg" },
-        { id: "2", name: "Flared Casual Skirt", price: 39.99, image: "https://gabbytests.github.io/test1/img/pd6.jpg" },
-        { id: "3", name: "Loose Cropped Fleece", price: 44.99, image: "https://gabbytests.github.io/test1/img/pd7.jpg" },
-        { id: "4", name: "Stylish Everyday Glasses", price: 9.99, image: "https://gabbytests.github.io/test1/img/ww.jpg" }
-      ];
-      localStorage.setItem("products", JSON.stringify(products));
-    }
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+    authDomain: "ccdb-88f09.firebaseapp.com",
+    databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+    projectId: "ccdb-88f09",
+    storageBucket: "ccdb-88f09.firebasestorage.app",
+    messagingSenderId: "526809144784",
+    appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+    measurementId: "G-WNJ376BBZF"
+  };
 
-    productList.innerHTML = "";
-    products.forEach((product, index) => {
-      const li = document.createElement("li");
-      li.className = "scroll-trigger animate--slide-in";
-      li.setAttribute("data-cascade", "");
-      li.style = `--animation-order: ${index + 1};`;
-      li.innerHTML = `
-        <div class="card-wrapper product-card-wrapper underline-links-hover">
-          <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
-            <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
-              <div class="card__media">
-                <div class="media media--transparent media--hover-effect">
-                  <img src="${product.image}" alt="${product.name}" class="motion-reduce" loading="eager">
-                </div>
-              </div>
-            </div>
-            <div class="card__content">
-              <div class="card__information">
-                <h3 class="card__heading h5">
-                  <span class="full-unstyled-link">${product.name}</span>
-                </h3>
-                <div class="card-information">
-                  <div class="price">
-                    <div class="price__container">
-                      <div class="price__regular">
-                        <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                        <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
-                      </div>
+  try {
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully in index.html");
+  } catch (error) {
+    console.error("Firebase initialization failed:", error);
+  }
+
+  function loadProducts() {
+    const productList = document.getElementById("product-list");
+    productList.innerHTML = "Loading products...";
+    const productsRef = firebase.database().ref('products');
+    productsRef.on('value', (snapshot) => {
+      productList.innerHTML = "";
+      const products = snapshot.val();
+      console.log("Fetched products:", products);
+      if (products) {
+        Object.keys(products).forEach((id, index) => {
+          const product = products[id];
+          const li = document.createElement("li");
+          li.className = "scroll-trigger animate--slide-in";
+          li.setAttribute("data-cascade", "");
+          li.style = `--animation-order: ${index + 1};`;
+          li.innerHTML = `
+            <div class="card-wrapper product-card-wrapper underline-links-hover">
+              <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
+                <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
+                  <div class="card__media">
+                    <div class="media media--transparent media--hover-effect">
+                      <img src="${product.image || ''}" alt="${product.name}" class="motion-reduce" loading="eager">
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="quick-add no-js-hidden">
-                <product-form data-section-id="template--16088786534534__featured_collection">
-                  <button
-                    type="submit"
-                    name="add"
-                    class="add-to-cart quick-add__submit button button--full-width button--secondary"
-                    aria-haspopup="dialog"
-                    aria-live="polite"
-                    data-sold-out-message="true"
-                    data-product-id="${product.id}"
-                    data-name="${product.name}"
-                    data-price="${product.price}"
-                    data-image="${product.image}"
-                  >
-                    <span>Add to cart</span>
-                    <span class="sold-out-message hidden">Sold out</span>
-                    <div class="loading__spinner hidden">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="spinner" viewBox="0 0 66 66">
-                        <circle stroke-width="6" cx="33" cy="33" r="30" fill="none" class="path"/>
-                      </svg>
+                <div class="card__content">
+                  <div class="card__information">
+                    <h3 class="card__heading h5">
+                      <span class="full-unstyled-link">${product.name}</span>
+                    </h3>
+                    <div class="card-information">
+                      <div class="price">
+                        <div class="price__container">
+                          <div class="price__regular">
+                            <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                            <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </button>
-                </product-form>
+                  </div>
+                  <div class="quick-add no-js-hidden">
+                    <button
+                      type="button"
+                      class="add-to-cart quick-add__submit button button--full-width button--secondary"
+                      data-product-id="${product.id}"
+                      data-name="${product.name}"
+                      data-price="${product.price}"
+                      data-image="${product.image || ''}"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      `;
-      productList.appendChild(li);
+          `;
+          productList.appendChild(li);
+        });
+      } else {
+        productList.innerHTML = "No products available.";
+      }
+    }, (error) => {
+      console.error("Error fetching products:", error);
+      productList.innerHTML = "Failed to load products.";
     });
-
-    // Ensure cart listeners are initialized after products are loaded
-    if (window.initializeCartListeners) {
-      window.initializeCartListeners();
-    }
   }
 
-  document.addEventListener("DOMContentLoaded", loadProducts);
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded, calling loadProducts");
+    loadProducts();
+  });
 </script>
 
 <script>
