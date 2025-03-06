@@ -840,6 +840,21 @@ for (var attr in meta) {
         font-weight: bold;
         margin-top: 15px;
       }
+      .remove-all {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.remove-all:hover {
+    background: #c0392b;
+}
       #checkout-btn {
         background: #0071e3;
         color: white;
@@ -1779,6 +1794,8 @@ Item added to your cart
   <div id="cart-items"></div>
   <p id="cart-total">Total: $0.00</p>
   <button id="checkout-btn">Checkout</button>
+  <button id="remove-all-btn" class="remove-all">Remove All</button>
+
 </div>
 
 </div>
