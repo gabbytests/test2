@@ -104,47 +104,78 @@
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Racour CMS Login</h1>
-    <form id="login-form">
-      <input type="password" id="password" placeholder="Enter password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-  <div class="notification" id="notification"></div>
-  <script>
-    const correctPassword = localStorage.getItem('password') || 'admin123';
-    const form = document.getElementById('login-form');
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const password = document.getElementById('password').value;
-      if (password === correctPassword) {
-        localStorage.setItem("authenticated", "true");
-        window.location.href = "dashboard.html";
-      } else {
-        showNotification('Incorrect password', true);
+    <div class="login-container">
+      <h1>Racour CMS Login</h1>
+      <form id="login-form">
+        <input type="password" id="password" placeholder="Enter password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    <div class="notification" id="notification"></div>
+  
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+        authDomain: "ccdb-88f09.firebaseapp.com",
+        databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+        projectId: "ccdb-88f09",
+        storageBucket: "ccdb-88f09.firebasestorage.app",
+        messagingSenderId: "526809144784",
+        appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+        measurementId: "G-WNJ376BBZF"
+      };
+      try {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+      } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        showNotification("Failed to connect to database", true);
       }
-    }
-
-    form.addEventListener('submit', handleLogin);
-    document.getElementById('password').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        handleLogin(e);
+  
+      const db = firebase.database();
+      const passwordRef = db.ref('settings/password');
+      const form = document.getElementById('login-form');
+      let correctPassword = 'admin123';
+  
+      passwordRef.once('value', (snapshot) => {
+        correctPassword = snapshot.val() || 'admin123';
+        console.log("Loaded password:", correctPassword);
+      }, (error) => {
+        console.error("Error fetching password:", error);
+        showNotification("Failed to load password", true);
+      });
+  
+      function handleLogin(e) {
+        e.preventDefault();
+        const password = document.getElementById('password').value;
+        if (password === correctPassword) {
+          localStorage.setItem("authenticated", "true");
+          window.location.href = "dashboard.html";
+        } else {
+          showNotification('Incorrect password', true);
+        }
       }
-    });
-
-    function showNotification(message, isError = false) {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.classList.toggle('error', isError);
-      notification.style.display = 'block';
-      notification.style.opacity = '1';
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.style.display = 'none', 300);
-      }, 2000);
-    }
-  </script>
-</body>
+  
+      form.addEventListener('submit', handleLogin);
+      document.getElementById('password').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          handleLogin(e);
+        }
+      });
+  
+      function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.classList.toggle('error', isError);
+        notification.style.display = 'block';
+        notification.style.opacity = '1';
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.style.display = 'none', 300);
+        }, 2000);
+      }
+    </script>
+  </body>
 </html>

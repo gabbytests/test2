@@ -1361,7 +1361,7 @@ Item added to your cart
             }
           </style>
           <div class="color-scheme-2 isolate gradient">
-            <div class="collection section-template--16088786534534__featured_collection-padding" id="collection-template--16088786534534__featured_collection" data-id="template--16088786534534__featured_collection">
+            <div class="collection section-template--16088786534534__featured_collection-padding" id="collection-template--16088786534534__featured_collection">
               <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
                 <h2 class="title inline-richtext h1 scroll-trigger animate--slide-in">
                   <strong>FEATURED PRODUCTS</strong>
@@ -1372,7 +1372,120 @@ Item added to your cart
               </div>
             </div>
           </div>
-        </section><div id="shopify-section-template--16088786534534__image_with_text_KnGiwU" class="shopify-section section"><link href="cdn/shop/t/1/assets/component-image-with-text.css@v=159347133892345898421736814350.css" rel="stylesheet" type="text/css" media="all" />
+        </section>
+
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+        <script>
+          const firebaseConfig = {
+            apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+            authDomain: "ccdb-88f09.firebaseapp.com",
+            databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+            projectId: "ccdb-88f09",
+            storageBucket: "ccdb-88f09.firebasestorage.app",
+            messagingSenderId: "526809144784",
+            appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+            measurementId: "G-WNJ376BBZF"
+          };
+          firebase.initializeApp(firebaseConfig);
+          const db = firebase.database();
+          const productsRef = db.ref('products');
+      
+          async function loadProducts() {
+            const productList = document.getElementById("product-list");
+            productsRef.on('value', (snapshot) => {
+              productList.innerHTML = "";
+              const products = snapshot.val();
+              if (products) {
+                Object.keys(products).forEach((id, index) => {
+                  const product = products[id];
+                  const li = document.createElement("li");
+                  li.className = "scroll-trigger animate--slide-in";
+                  li.setAttribute("data-cascade", "");
+                  li.style = `--animation-order: ${index + 1};`;
+                  li.innerHTML = `
+                    <div class="card-wrapper product-card-wrapper underline-links-hover">
+                      <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
+                        <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
+                          <div class="card__media">
+                            <div class="media media--transparent media--hover-effect">
+                              <img src="${product.image}" alt="${product.name}" class="motion-reduce" loading="eager">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card__content">
+                          <div class="card__information">
+                            <h3 class="card__heading h5">
+                              <span class="full-unstyled-link">${product.name}</span>
+                            </h3>
+                            <div class="card-information">
+                              <div class="price">
+                                <div class="price__container">
+                                  <div class="price__regular">
+                                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                                    <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="quick-add no-js-hidden">
+                            <product-form data-section-id="template--16088786534534__featured_collection">
+                              <button
+                                type="submit"
+                                name="add"
+                                class="add-to-cart quick-add__submit button button--full-width button--secondary"
+                                aria-haspopup="dialog"
+                                aria-live="polite"
+                                data-sold-out-message="true"
+                                data-product-id="${product.id}"
+                                data-name="${product.name}"
+                                data-price="${product.price}"
+                                data-image="${product.image}"
+                              >
+                                <span>Add to cart</span>
+                                <span class="sold-out-message hidden">Sold out</span>
+                                <div class="loading__spinner hidden">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="spinner" viewBox="0 0 66 66">
+                                    <circle stroke-width="6" cx="33" cy="33" r="30" fill="none" class="path"/>
+                                  </svg>
+                                </div>
+                              </button>
+                            </product-form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                  productList.appendChild(li);
+                });
+              }
+              if (window.initializeCartListeners) {
+                window.initializeCartListeners();
+              }
+            });
+          }
+      
+          document.addEventListener("DOMContentLoaded", loadProducts);
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <div id="shopify-section-template--16088786534534__image_with_text_KnGiwU" class="shopify-section section"><link href="cdn/shop/t/1/assets/component-image-with-text.css@v=159347133892345898421736814350.css" rel="stylesheet" type="text/css" media="all" />
 <style data-shopify>.section-template--16088786534534__image_with_text_KnGiwU-padding {
     padding-top: 27px;
     padding-bottom: 27px;

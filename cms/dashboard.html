@@ -29,7 +29,6 @@
       display: flex;
       min-height: 100vh;
     }
-    /* Sidebar */
     .sidebar {
       width: 250px;
       background: var(--card-bg);
@@ -69,7 +68,6 @@
       background: #f1f1f3;
       color: var(--primary-color);
     }
-    /* Main Content */
     .main-content {
       flex: 1;
       margin-left: 250px;
@@ -97,7 +95,6 @@
       color: var(--primary-color);
       font-weight: 500;
     }
-    /* Sections */
     .section {
       background: var(--card-bg);
       padding: 20px;
@@ -113,7 +110,6 @@
       font-weight: 600;
       margin-bottom: 15px;
     }
-    /* Dashboard Section */
     .dashboard-section .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -135,7 +131,6 @@
       font-weight: 600;
       margin: 0;
     }
-    /* Products Section */
     #product-form {
       display: grid;
       gap: 12px;
@@ -249,7 +244,6 @@
     .actions button:nth-child(2):hover {
       background: #d32f2f;
     }
-    /* Settings Section */
     #settings-form {
       display: grid;
       gap: 12px;
@@ -277,7 +271,6 @@
       margin-bottom: 8px;
       color: #333;
     }
-    /* Notification */
     .notification {
       position: fixed;
       top: 20px;
@@ -296,17 +289,14 @@
       background: #ff3b30;
       color: #fff;
     }
-    /* Mobile Menu Toggle */
     .menu-toggle {
       display: none;
-      color: #000000;
       font-size: 24px;
       background: none;
       border: none;
       cursor: pointer;
       padding: 10px;
     }
-    /* Responsive Design */
     @media screen and (max-width: 750px) {
       .sidebar {
         transform: translateX(-100%);
@@ -373,182 +363,206 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <h2>Racour CMS</h2>
-      <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
-        <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
-        <li><a href="#" data-section="products-section">Products</a></li>
-        <li><a href="#" data-section="settings-section">Settings</a></li>
-        <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
-      </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="header">
-        <button class="menu-toggle">☰</button>
-        <h1 id="header-title">Dashboard</h1>
-        <div class="user-info"><span><a href="../index.html">Back To Shop</a></span></div>
-      </div>
-
-      <!-- Dashboard Section -->
-      <div class="section dashboard-section active" id="dashboard-section">
-        <h2>Welcome, Admin</h2>
-        <p>Here’s a quick overview of your store.</p>
-        <div class="stats">
-          <div class="stat-card">
-            <h3>Total Products</h3>
-            <p id="total-products">0</p>
+    <div class="container">
+      <nav class="sidebar">
+        <h2>Racour CMS</h2>
+        <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
+          <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
+          <li><a href="#" data-section="products-section">Products</a></li>
+          <li><a href="#" data-section="settings-section">Settings</a></li>
+          <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+  
+      <div class="main-content">
+        <div class="header">
+          <button class="menu-toggle">☰</button>
+          <h1 id="header-title">Dashboard</h1>
+          <div class="user-info">Logged in as <span>Admin</span></div>
+        </div>
+  
+        <div class="section dashboard-section active" id="dashboard-section">
+          <h2>Welcome, Admin</h2>
+          <p>Here’s a quick overview of your store.</p>
+          <div class="stats">
+            <div class="stat-card">
+              <h3>Total Products</h3>
+              <p id="total-products">0</p>
+            </div>
           </div>
         </div>
+  
+        <div class="section products-section" id="products-section">
+          <h2>Manage Products</h2>
+          <form id="product-form">
+            <input type="hidden" id="productId">
+            <input type="text" id="productName" placeholder="Product Name" required>
+            <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
+            <input type="file" id="productImage" accept="image/*" onchange="updatePreview()">
+            <img id="imagePreview" alt="Image Preview">
+            <div class="button-group">
+              <button type="submit">Save Product</button>
+              <button type="button" class="secondary" onclick="clearForm()">Clear</button>
+            </div>
+          </form>
+          <div class="product-list-title">Product List</div>
+          <div id="productList"></div>
+        </div>
+  
+        <div class="section settings-section" id="settings-section">
+          <h2>Settings</h2>
+          <form id="settings-form">
+            <div class="settings-option">
+              <label for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" placeholder="Enter current password" required>
+            </div>
+            <div class="settings-option">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" placeholder="Enter new password" required>
+            </div>
+            <div class="settings-option">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+            </div>
+            <div class="button-group">
+              <button type="submit">Update Password</button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <!-- Products Section -->
-      <div class="section products-section" id="products-section">
-        <h2>Manage Products</h2>
-        <form id="product-form">
-          <input type="hidden" id="productId">
-          <input type="text" id="productName" placeholder="Product Name" required>
-          <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
-          <input type="file" id="productImage" accept="image/*" required onchange="updatePreview()">
-          <img id="imagePreview" alt="Image Preview">
-          <div class="button-group">
-            <button type="submit">Save Product</button>
-            <button type="button" class="secondary" onclick="clearForm()">Clear</button>
-          </div>
-        </form>
-        <div class="product-list-title">Product List</div>
-        <div id="productList"></div>
-      </div>
-
-      <!-- Settings Section -->
-      <div class="section settings-section" id="settings-section">
-        <h2>Settings</h2>
-        <form id="settings-form">
-          <div class="settings-option">
-            <label for="currentPassword">Current Password</label>
-            <input type="password" id="currentPassword" placeholder="Enter current password" required>
-          </div>
-          <div class="settings-option">
-            <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" placeholder="Enter new password" required>
-          </div>
-          <div class="settings-option">
-            <label for="confirmPassword">Confirm New Password</label>
-            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
-          </div>
-          <div class="button-group">
-            <button type="submit">Update Password</button>
-          </div>
-        </form>
-      </div>
+  
+      <div class="notification" id="notification"></div>
     </div>
-
-    <!-- Notification -->
-    <div class="notification" id="notification"></div>
-  </div>
-  <script src="cms-script.js"></script>
-  <script>
-    // Toggle sidebar on mobile
-    const menuToggle = document.querySelector('.menu-toggle');
-    const sidebar = document.querySelector('.sidebar');
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
-
-    // Close sidebar when clicking outside or selecting an option on mobile
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-        sidebar.classList.remove('active');
+  
+    <!-- Use Firebase v8 Legacy SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+        authDomain: "ccdb-88f09.firebaseapp.com",
+        databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+        projectId: "ccdb-88f09",
+        storageBucket: "ccdb-88f09.firebasestorage.app",
+        messagingSenderId: "526809144784",
+        appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+        measurementId: "G-WNJ376BBZF"
+      };
+      try {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+      } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        showNotification("Failed to connect to database", true);
       }
-    });
-
-    // Sidebar navigation
-    const navLinks = document.querySelectorAll('.sidebar ul li a');
-    const sections = document.querySelectorAll('.section');
-    const headerTitle = document.getElementById('header-title');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const sectionId = link.getAttribute('data-section');
-        if (!sectionId && link.textContent.trim() === 'Logout') {
-          logout();
-          return;
-        }
-
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-
-        sections.forEach(section => section.classList.remove('active'));
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-          targetSection.classList.add('active');
-          headerTitle.textContent = link.textContent.trim();
-        }
-
-        if (sectionId === 'products-section') {
-          displayProducts();
-        } else if (sectionId === 'dashboard-section') {
-          updateDashboardStats();
-        } else if (sectionId === 'settings-section') {
-          // No action needed yet
-        }
-
-        // Hide sidebar on mobile after selection
-        if (window.innerWidth <= 750) {
+    </script>
+    <script src="cms-script.js"></script>
+    <script>
+      const menuToggle = document.querySelector('.menu-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+  
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
           sidebar.classList.remove('active');
         }
       });
-    });
-
-    // Logout function
-    function logout() {
-      localStorage.removeItem("authenticated");
-      window.location.href = "login.html";
-    }
-
-    // Update dashboard stats
-    function updateDashboardStats() {
-      const totalProducts = document.getElementById('total-products');
-      totalProducts.textContent = products.length;
-    }
-
-    // Settings form submission
-    const settingsForm = document.getElementById('settings-form');
-    settingsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-
-      if (currentPassword !== 'admin123') {
-        showNotification('Current password is incorrect', true);
-      } else if (newPassword !== confirmPassword) {
-        showNotification('New passwords do not match', true);
-      } else {
-        localStorage.setItem('password', newPassword); // Simulated password update
-        showNotification('Password updated successfully');
-        settingsForm.reset();
+  
+      const navLinks = document.querySelectorAll('.sidebar ul li a');
+      const sections = document.querySelectorAll('.section');
+      const headerTitle = document.getElementById('header-title');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = link.getAttribute('data-section');
+          if (!sectionId && link.textContent.trim() === 'Logout') {
+            logout();
+            return;
+          }
+  
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+  
+          sections.forEach(section => section.classList.remove('active'));
+          const targetSection = document.getElementById(sectionId);
+          if (targetSection) {
+            targetSection.classList.add('active');
+            headerTitle.textContent = link.textContent.trim();
+          }
+  
+          if (sectionId === 'products-section') {
+            displayProducts();
+          } else if (sectionId === 'dashboard-section') {
+            updateDashboardStats();
+          }
+  
+          if (window.innerWidth <= 750) {
+            sidebar.classList.remove('active');
+          }
+        });
+      });
+  
+      function logout() {
+        localStorage.removeItem("authenticated");
+        window.location.href = "login.html";
       }
-    });
-
-    // Notification function
-    function showNotification(message, isError = false) {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.classList.toggle('error', isError);
-      notification.style.display = 'block';
-      notification.style.opacity = '1';
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.style.display = 'none', 300);
-      }, 2000);
-    }
-
-    // Initial load
-    updateDashboardStats();
-  </script>
-</body>
+  
+      function updateDashboardStats() {
+        const totalProducts = document.getElementById('total-products');
+        firebase.database().ref('products').once('value', (snapshot) => {
+          totalProducts.textContent = snapshot.numChildren() || 0;
+        }, (error) => {
+          console.error("Error fetching product count:", error);
+          showNotification("Failed to load product count", true);
+        });
+      }
+  
+      const settingsForm = document.getElementById('settings-form');
+      const passwordRef = firebase.database().ref('settings/password');
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+  
+        passwordRef.once('value', (snapshot) => {
+          const storedPassword = snapshot.val() || 'admin123';
+          if (currentPassword !== storedPassword) {
+            showNotification('Current password is incorrect', true);
+          } else if (newPassword !== confirmPassword) {
+            showNotification('New passwords do not match', true);
+          } else {
+            passwordRef.set(newPassword)
+              .then(() => {
+                showNotification('Password updated successfully');
+                settingsForm.reset();
+              })
+              .catch(error => {
+                console.error("Error updating password:", error);
+                showNotification('Error updating password: ' + error.message, true);
+              });
+          }
+        }, (error) => {
+          console.error("Error fetching password:", error);
+          showNotification("Failed to load current password", true);
+        });
+      });
+  
+      function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.classList.toggle('error', isError);
+        notification.style.display = 'block';
+        notification.style.opacity = '1';
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.style.display = 'none', 300);
+        }, 2000);
+      }
+  
+      updateDashboardStats();
+    </script>
+  </body>
 </html>

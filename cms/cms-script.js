@@ -2,26 +2,40 @@ if (localStorage.getItem("authenticated") !== "true") {
     window.location.href = "login.html";
   }
   
-  let products = JSON.parse(localStorage.getItem("products")) || [];
+  const db = firebase.database();
+  const productsRef = db.ref('products');
   
   function displayProducts() {
     const productList = document.getElementById("productList");
-    productList.innerHTML = "";
-    products.forEach(product => {
-      const div = document.createElement("div");
-      div.className = "product-item";
-      div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}">
-        <div class="product-info">
-          <div class="name">${product.name}</div>
-          <div class="price">$${product.price.toFixed(2)}</div>
-        </div>
-        <div class="actions">
-          <button onclick="editProduct('${product.id}')">Edit</button>
-          <button onclick="deleteProduct('${product.id}')">Delete</button>
-        </div>
-      `;
-      productList.appendChild(div);
+    productList.innerHTML = "Loading products...";
+    productsRef.on('value', (snapshot) => {
+      productList.innerHTML = "";
+      const products = snapshot.val();
+      if (products) {
+        Object.keys(products).forEach(id => {
+          const product = products[id];
+          const div = document.createElement("div");
+          div.className = "product-item";
+          div.innerHTML = `
+            <img src="${product.image || ''}" alt="${product.name}">
+            <div class="product-info">
+              <div class="name">${product.name}</div>
+              <div class="price">$${product.price.toFixed(2)}</div>
+            </div>
+            <div class="actions">
+              <button onclick="editProduct('${id}')">Edit</button>
+              <button onclick="deleteProduct('${id}')">Delete</button>
+            </div>
+          `;
+          productList.appendChild(div);
+        });
+      } else {
+        productList.innerHTML = "No products found.";
+      }
+    }, (error) => {
+      console.error("Error fetching products:", error);
+      productList.innerHTML = "Failed to load products.";
+      showNotification("Error loading products: " + error.message, true);
     });
   }
   
@@ -33,46 +47,69 @@ if (localStorage.getItem("authenticated") !== "true") {
     const fileInput = document.getElementById("productImage");
     const file = fileInput.files[0];
   
+    if (!name || isNaN(price)) {
+      showNotification("Please enter a valid name and price", true);
+      return;
+    }
+  
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
         const image = e.target.result;
-        const existing = products.find(p => p.id === id);
-        if (existing) {
-          Object.assign(existing, { name, price, image });
-        } else {
-          products.push({ id, name, price, image });
-        }
-        localStorage.setItem("products", JSON.stringify(products));
-        displayProducts();
-        clearForm();
+        productsRef.child(id).set({ id, name, price, image })
+          .then(() => {
+            showNotification("Product saved successfully");
+            clearForm();
+          })
+          .catch(error => {
+            console.error("Error saving product:", error);
+            showNotification("Error saving product: " + error.message, true);
+          });
+      };
+      reader.onerror = function() {
+        showNotification("Error reading image file", true);
       };
       reader.readAsDataURL(file);
-    } else if (document.getElementById("productId").value) {
-      // If editing and no new file, keep existing image
-      const existing = products.find(p => p.id === id);
-      if (existing) {
-        Object.assign(existing, { name, price });
-        localStorage.setItem("products", JSON.stringify(products));
-        displayProducts();
-        clearForm();
-      }
+    } else {
+      productsRef.child(id).once('value', (snapshot) => {
+        const existing = snapshot.val();
+        const image = existing ? existing.image : "";
+        productsRef.child(id).set({ id, name, price, image })
+          .then(() => {
+            showNotification("Product updated successfully");
+            clearForm();
+          })
+          .catch(error => {
+            console.error("Error updating product:", error);
+            showNotification("Error updating product: " + error.message, true);
+          });
+      });
     }
   }
   
   function editProduct(id) {
-    const product = products.find(p => p.id === id);
-    document.getElementById("productId").value = product.id;
-    document.getElementById("productName").value = product.name;
-    document.getElementById("productPrice").value = product.price;
-    document.getElementById("imagePreview").src = product.image;
-    document.getElementById("imagePreview").style.display = "block";
+    productsRef.child(id).once('value', (snapshot) => {
+      const product = snapshot.val();
+      if (product) {
+        document.getElementById("productId").value = product.id;
+        document.getElementById("productName").value = product.name;
+        document.getElementById("productPrice").value = product.price;
+        document.getElementById("imagePreview").src = product.image || "";
+        document.getElementById("imagePreview").style.display = product.image ? "block" : "none";
+      }
+    }, (error) => {
+      console.error("Error fetching product for edit:", error);
+      showNotification("Error loading product: " + error.message, true);
+    });
   }
   
   function deleteProduct(id) {
-    products = products.filter(p => p.id !== id);
-    localStorage.setItem("products", JSON.stringify(products));
-    displayProducts();
+    productsRef.child(id).remove()
+      .then(() => showNotification("Product deleted successfully"))
+      .catch(error => {
+        console.error("Error deleting product:", error);
+        showNotification("Error deleting product: " + error.message, true);
+      });
   }
   
   function clearForm() {
@@ -91,10 +128,23 @@ if (localStorage.getItem("authenticated") !== "true") {
         preview.src = e.target.result;
         preview.style.display = "block";
       };
+      reader.onerror = function() {
+        showNotification("Error previewing image", true);
+      };
       reader.readAsDataURL(file);
-    } else {
-      preview.style.display = "none";
     }
+  }
+  
+  function showNotification(message, isError = false) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.classList.toggle('error', isError);
+    notification.style.display = 'block';
+    notification.style.opacity = '1';
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.style.display = 'none', 300);
+    }, 2000);
   }
   
   document.getElementById("product-form").addEventListener("submit", saveProduct);
