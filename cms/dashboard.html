@@ -5,105 +5,550 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMS Dashboard - Racour</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f7;
+    :root {
+      --primary-color: #0071e3;
+      --text-color: #1d1d1f;
+      --bg-color: #f5f5f7;
+      --card-bg: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --border-radius: 12px;
+    }
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--card-bg);
       padding: 20px;
+      box-shadow: var(--shadow);
+      position: fixed;
+      height: 100%;
+      transition: transform 0.3s ease;
+      z-index: 1000;
     }
-    .dashboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      font-size: 32px;
-      font-weight: 600;
-      color: #1d1d1f;
-      margin-bottom: 30px;
-    }
-    h2 {
+    .sidebar h2 {
       font-size: 24px;
       font-weight: 600;
-      margin: 20px 0 10px;
+      margin-bottom: 30px;
+      color: var(--text-color);
     }
-    form {
+    .sidebar ul {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      margin-bottom: 30px;
+      height: calc(100% - 60px);
     }
-    input, textarea {
-      padding: 12px;
-      border: 1px solid #d2d2d7;
-      border-radius: 10px;
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: var(--text-color);
       font-size: 16px;
-      transition: border-color 0.3s;
-    }
-    input:focus, textarea:focus {
-      border-color: #0071e3;
-      outline: none;
-    }
-    button {
-      padding: 12px;
-      background: #0071e3;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
+      display: block;
+      padding: 10px;
+      border-radius: 8px;
       transition: background 0.3s;
     }
-    button:hover {
-      background: #005bb5;
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: #f1f1f3;
+      color: var(--primary-color);
     }
-    .product-list {
-      display: grid;
-      gap: 20px;
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 15px;
     }
-    .product-item {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px;
+      background: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .user-info {
+      font-size: 14px;
+      color: #666;
+    }
+    .user-info span {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    /* Sections */
+    .section {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    /* Dashboard Section */
+    .dashboard-section .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .stat-card {
       background: #f9f9f9;
-      border-radius: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-card h3 {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .stat-card p {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+    }
+    /* Products Section */
+    #product-form {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    #product-form input[type="text"],
+    #product-form input[type="number"],
+    #product-form input[type="file"] {
+      padding: 10px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    #product-form input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+    #imagePreview {
+      max-width: 100px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .button-group {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    button {
+      padding: 10px 18px;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: #005bb5;
+      transform: translateY(-1px);
+    }
+    button.secondary {
+      background: #e0e0e0;
+      color: var(--text-color);
+    }
+    button.secondary:hover {
+      background: #d0d0d0;
+    }
+    .product-list-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 15px 0 10px;
+      color: #333;
+    }
+    #productList {
+      display: grid;
+      gap: 8px;
+    }
+    .product-item {
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      align-items: center;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .product-item:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
     }
     .product-item img {
       width: 50px;
       height: 50px;
-      border-radius: 5px;
       object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #eee;
+    }
+    .product-info {
+      margin-left: 12px;
+      font-size: 14px;
+    }
+    .product-info .name {
+      font-weight: 500;
+      color: #1d1d1f;
+    }
+    .product-info .price {
+      color: #666;
+      font-size: 13px;
+    }
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+    .actions button {
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+    .actions button:nth-child(2) {
+      background: #ff3b30;
+    }
+    .actions button:nth-child(2):hover {
+      background: #d32f2f;
+    }
+    /* Settings Section */
+    #settings-form {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    #settings-form input {
+      padding: 10px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    #settings-form input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+    .settings-option {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .settings-option label {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      font-size: 14px;
+      color: #333;
+      display: none;
+      z-index: 2000;
+      transition: opacity 0.3s;
+    }
+    .notification.error {
+      background: #ff3b30;
+      color: #fff;
+    }
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      color: #000000;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+    }
+    /* Responsive Design */
+    @media screen and (max-width: 750px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 200px;
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 10px;
+      }
+      .header {
+        padding: 10px 15px;
+      }
+      .header h1 {
+        font-size: 18px;
+      }
+      .menu-toggle {
+        display: block;
+      }
+      .section {
+        padding: 15px;
+      }
+      #product-form,
+      #settings-form {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+      .product-item {
+        grid-template-columns: 40px 1fr;
+        gap: 8px;
+        padding: 10px;
+      }
+      .product-item img {
+        width: 40px;
+        height: 40px;
+      }
+      .product-info {
+        margin-left: 10px;
+        font-size: 13px;
+      }
+      .product-info .price {
+        font-size: 12px;
+      }
+      .actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+      }
+      .actions button {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+      #imagePreview {
+        max-width: 80px;
+      }
+      .dashboard-section .stats {
+        grid-template-columns: 1fr;
+      }
+      .settings-option {
+        padding: 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <h1>CMS Dashboard</h1>
-    
-    <section>
-      <h2>Manage Products</h2>
-      <form id="product-form">
-        <input type="text" id="name" placeholder="Product Name" required>
-        <input type="number" id="price" placeholder="Price" step="0.01" required>
-        <textarea id="description" placeholder="Description" required></textarea>
-        <input type="file" id="image" accept="image/*">
-        <button type="submit">Add Product</button>
-      </form>
-      <div id="product-list" class="product-list"></div>
-    </section>
-    
-    <section>
-      <h2>Change Password</h2>
-      <input type="password" id="new-password" placeholder="New Password">
-      <button onclick="changePassword()">Update Password</button>
-    </section>
+  <div class="container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h2>Racour CMS</h2>
+      <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
+        <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
+        <li><a href="#" data-section="products-section">Products</a></li>
+        <li><a href="#" data-section="settings-section">Settings</a></li>
+        <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <button class="menu-toggle">☰</button>
+        <h1 id="header-title">Dashboard</h1>
+        <div class="user-info">Logged in as <span>Admin</span></div>
+      </div>
+
+      <!-- Dashboard Section -->
+      <div class="section dashboard-section active" id="dashboard-section">
+        <h2>Welcome, Admin</h2>
+        <p>Here’s a quick overview of your store.</p>
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Products</h3>
+            <p id="total-products">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Section -->
+      <div class="section products-section" id="products-section">
+        <h2>Manage Products</h2>
+        <form id="product-form">
+          <input type="hidden" id="productId">
+          <input type="text" id="productName" placeholder="Product Name" required>
+          <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
+          <input type="file" id="productImage" accept="image/*" required onchange="updatePreview()">
+          <img id="imagePreview" alt="Image Preview">
+          <div class="button-group">
+            <button type="submit">Save Product</button>
+            <button type="button" class="secondary" onclick="clearForm()">Clear</button>
+          </div>
+        </form>
+        <div class="product-list-title">Product List</div>
+        <div id="productList"></div>
+      </div>
+
+      <!-- Settings Section -->
+      <div class="section settings-section" id="settings-section">
+        <h2>Settings</h2>
+        <form id="settings-form">
+          <div class="settings-option">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password" required>
+          </div>
+          <div class="settings-option">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" placeholder="Enter new password" required>
+          </div>
+          <div class="settings-option">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+          </div>
+          <div class="button-group">
+            <button type="submit">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
   <script src="cms-script.js"></script>
+  <script>
+    // Toggle sidebar on mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside or selecting an option on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    // Sidebar navigation
+    const navLinks = document.querySelectorAll('.sidebar ul li a');
+    const sections = document.querySelectorAll('.section');
+    const headerTitle = document.getElementById('header-title');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('data-section');
+        if (!sectionId && link.textContent.trim() === 'Logout') {
+          logout();
+          return;
+        }
+
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        sections.forEach(section => section.classList.remove('active'));
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+          targetSection.classList.add('active');
+          headerTitle.textContent = link.textContent.trim();
+        }
+
+        if (sectionId === 'products-section') {
+          displayProducts();
+        } else if (sectionId === 'dashboard-section') {
+          updateDashboardStats();
+        } else if (sectionId === 'settings-section') {
+          // No action needed yet
+        }
+
+        // Hide sidebar on mobile after selection
+        if (window.innerWidth <= 750) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem("authenticated");
+      window.location.href = "login.html";
+    }
+
+    // Update dashboard stats
+    function updateDashboardStats() {
+      const totalProducts = document.getElementById('total-products');
+      totalProducts.textContent = products.length;
+    }
+
+    // Settings form submission
+    const settingsForm = document.getElementById('settings-form');
+    settingsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (currentPassword !== 'admin123') {
+        showNotification('Current password is incorrect', true);
+      } else if (newPassword !== confirmPassword) {
+        showNotification('New passwords do not match', true);
+      } else {
+        localStorage.setItem('password', newPassword); // Simulated password update
+        showNotification('Password updated successfully');
+        settingsForm.reset();
+      }
+    });
+
+    // Notification function
+    function showNotification(message, isError = false) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.classList.toggle('error', isError);
+      notification.style.display = 'block';
+      notification.style.opacity = '1';
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.style.display = 'none', 300);
+      }, 2000);
+    }
+
+    // Initial load
+    updateDashboardStats();
+  </script>
 </body>
 </html>

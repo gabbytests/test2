@@ -1,73 +1,101 @@
-let storedHash = "$2b$10$5z5Qz5z5Qz5z5Qz5z5Qz5uQz5z5Qz5z5Qz5z5Qz5z5Qz5z5Qz5z5Q"; // Hash for "admin123"
-
-function login() {
-  const password = document.getElementById("password").value;
-  if (bcrypt.compareSync(password, storedHash)) {
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Incorrect password");
+if (localStorage.getItem("authenticated") !== "true") {
+    window.location.href = "login.html";
   }
-}
-
-// Dashboard functions (keep your existing saveProduct, etc.)
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-function displayProducts() {
-  const productList = document.getElementById("productList");
-  productList.innerHTML = "";
-  products.forEach(product => {
-    const div = document.createElement("div");
-    div.className = "product-item";
-    div.innerHTML = `
-      <div style="display: flex; align-items: center;">
+  
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  
+  function displayProducts() {
+    const productList = document.getElementById("productList");
+    productList.innerHTML = "";
+    products.forEach(product => {
+      const div = document.createElement("div");
+      div.className = "product-item";
+      div.innerHTML = `
         <img src="${product.image}" alt="${product.name}">
-        <div class="product-info">${product.name} - $${product.price.toFixed(2)}</div>
-      </div>
-      <div class="actions">
-        <button onclick="editProduct('${product.id}')">Edit</button>
-        <button onclick="deleteProduct('${product.id}')">Delete</button>
-      </div>
-    `;
-    productList.appendChild(div);
-  });
-}
-
-function saveProduct() {
-  const id = document.getElementById("productId").value || Date.now().toString();
-  const name = document.getElementById("productName").value;
-  const price = parseFloat(document.getElementById("productPrice").value);
-  const image = document.getElementById("productImage").value;
-  const existing = products.find(p => p.id === id);
-  if (existing) Object.assign(existing, { name, price, image });
-  else products.push({ id, name, price, image });
-  localStorage.setItem("products", JSON.stringify(products));
-  displayProducts();
-  clearForm();
-}
-
-function deleteProduct(id) {
-  products = products.filter(p => p.id !== id);
-  localStorage.setItem("products", JSON.stringify(products));
-  displayProducts();
-}
-
-function clearForm() {
-  document.getElementById("productId").value = "";
-  document.getElementById("productName").value = "";
-  document.getElementById("productPrice").value = "";
-  document.getElementById("productImage").value = "";
-  document.getElementById("imagePreview").style.display = "none";
-}
-
-function updatePreview() {
-  const url = document.getElementById("productImage").value;
-  const preview = document.getElementById("imagePreview");
-  if (url) {
-    preview.src = url;
-    preview.style.display = "block";
-  } else {
-    preview.style.display = "none";
+        <div class="product-info">
+          <div class="name">${product.name}</div>
+          <div class="price">$${product.price.toFixed(2)}</div>
+        </div>
+        <div class="actions">
+          <button onclick="editProduct('${product.id}')">Edit</button>
+          <button onclick="deleteProduct('${product.id}')">Delete</button>
+        </div>
+      `;
+      productList.appendChild(div);
+    });
   }
-}
-
-if (document.getElementById("productList")) displayProducts();
+  
+  function saveProduct(event) {
+    event.preventDefault();
+    const id = document.getElementById("productId").value || Date.now().toString();
+    const name = document.getElementById("productName").value;
+    const price = parseFloat(document.getElementById("productPrice").value);
+    const fileInput = document.getElementById("productImage");
+    const file = fileInput.files[0];
+  
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const image = e.target.result;
+        const existing = products.find(p => p.id === id);
+        if (existing) {
+          Object.assign(existing, { name, price, image });
+        } else {
+          products.push({ id, name, price, image });
+        }
+        localStorage.setItem("products", JSON.stringify(products));
+        displayProducts();
+        clearForm();
+      };
+      reader.readAsDataURL(file);
+    } else if (document.getElementById("productId").value) {
+      // If editing and no new file, keep existing image
+      const existing = products.find(p => p.id === id);
+      if (existing) {
+        Object.assign(existing, { name, price });
+        localStorage.setItem("products", JSON.stringify(products));
+        displayProducts();
+        clearForm();
+      }
+    }
+  }
+  
+  function editProduct(id) {
+    const product = products.find(p => p.id === id);
+    document.getElementById("productId").value = product.id;
+    document.getElementById("productName").value = product.name;
+    document.getElementById("productPrice").value = product.price;
+    document.getElementById("imagePreview").src = product.image;
+    document.getElementById("imagePreview").style.display = "block";
+  }
+  
+  function deleteProduct(id) {
+    products = products.filter(p => p.id !== id);
+    localStorage.setItem("products", JSON.stringify(products));
+    displayProducts();
+  }
+  
+  function clearForm() {
+    document.getElementById("product-form").reset();
+    document.getElementById("productId").value = "";
+    document.getElementById("imagePreview").style.display = "none";
+  }
+  
+  function updatePreview() {
+    const fileInput = document.getElementById("productImage");
+    const file = fileInput.files[0];
+    const preview = document.getElementById("imagePreview");
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = "none";
+    }
+  }
+  
+  document.getElementById("product-form").addEventListener("submit", saveProduct);
+  displayProducts();

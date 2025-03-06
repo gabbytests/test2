@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".increase-quantity").forEach(button => {
       button.addEventListener("click", (e) => {
-        e.stopPropagation();
         const idx = e.currentTarget.getAttribute("data-index");
         cart[idx].quantity++;
         updateCartDisplay();
@@ -96,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".decrease-quantity").forEach(button => {
       button.addEventListener("click", (e) => {
-        e.stopPropagation();
         const idx = e.currentTarget.getAttribute("data-index");
         if (cart[idx].quantity > 1) {
           cart[idx].quantity--;
@@ -109,15 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.initializeCartListeners = function() {
-    document.querySelectorAll(".add-to-cart").forEach((button) => {
-      button.removeEventListener("click", addToCartHandler); // Prevent duplicate listeners
+    document.querySelectorAll(".add-to-cart").forEach(button => {
+      button.removeEventListener("click", addToCartHandler); // Remove old listeners
       button.addEventListener("click", addToCartHandler);
     });
   };
 
   function addToCartHandler(e) {
+    e.preventDefault();
     const btn = e.currentTarget;
-    const id = btn.querySelector("input[name='product-id']").value;
+    const id = btn.getAttribute("data-product-id");
     const name = btn.getAttribute("data-name");
     const price = parseFloat(btn.getAttribute("data-price"));
     const image = btn.getAttribute("data-image") || "";
@@ -146,8 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  closeCartBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
+  closeCartBtn.addEventListener("click", () => {
     cartSidebar.classList.remove("cart-visible");
   });
 
@@ -156,5 +154,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateCartDisplay();
-  initializeCartListeners();
+  window.initializeCartListeners();
 });
