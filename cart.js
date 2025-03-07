@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    console.log("Cart loaded:", cart);
+    console.log("Cart initialized:", cart);
   
     const cartIcon = document.getElementById("cart-icon");
     const cartCount = document.getElementById("cart-count");
@@ -11,17 +11,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkout-btn");
     const removeAllBtn = document.getElementById("remove-all-btn");
   
-    if (!cartIcon || !cartCount || !cartSidebar) {
-      console.error("Cart elements missing from DOM!");
-      return;
-    }
+    // Check all required elements
+    if (!cartIcon) console.error("Cart icon not found!");
+    if (!cartCount) console.error("Cart count not found!");
+    if (!cartSidebar) console.error("Cart sidebar not found!");
+    if (!closeCartBtn) console.error("Close cart button not found!");
+    if (!cartItemsContainer) console.error("Cart items container not found!");
+    if (!cartTotal) console.error("Cart total not found!");
+    if (!checkoutBtn) console.error("Checkout button not found!");
+    if (!removeAllBtn) console.error("Remove all button not found!");
   
     const cartNotification = document.createElement("div");
     cartNotification.id = "cart-notification";
     cartNotification.style.cssText = `
       position: fixed; top: 80px; right: 20px; background: #0071e3; color: white;
       padding: 10px 15px; border-radius: 10px; font-size: 14px; font-weight: bold;
-      display: none; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; z-index: 1000;
+      display: none; opacity: 0; transition: opacity 0.3s ease; z-index: 1000;
     `;
     document.body.appendChild(cartNotification);
   
@@ -36,13 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     function updateCartCount() {
+      if (!cartCount) return;
       const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
       cartCount.textContent = itemCount;
-      cartIcon.classList.add("cart-bounce");
-      setTimeout(() => cartIcon.classList.remove("cart-bounce"), 500);
+      if (cartIcon) {
+        cartIcon.classList.add("cart-bounce");
+        setTimeout(() => cartIcon.classList.remove("cart-bounce"), 500);
+      }
     }
   
     function updateCartDisplay() {
+      if (!cartItemsContainer || !cartTotal) return;
       cartItemsContainer.innerHTML = "";
       let total = 0;
       cart.forEach((item, index) => {
@@ -91,11 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
   
     function attachCartListeners() {
       const buttons = document.querySelectorAll(".add-to-cart");
-      console.log("Add-to-cart buttons found:", buttons.length);
+      console.log("Found add-to-cart buttons:", buttons.length);
+      if (buttons.length === 0) console.warn("No add-to-cart buttons found!");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           const id = button.getAttribute("data-product-id");
-          console.log("Adding product with ID:", id);
+          console.log("Adding product ID:", id);
           const products = JSON.parse(localStorage.getItem("products")) || [];
           const product = products.find(p => p.id === id);
           if (!product) {
@@ -106,29 +116,66 @@ document.addEventListener("DOMContentLoaded", () => {
           const existing = cart.find(item => item.id === id);
           if (existing) existing.quantity++;
           else cart.push({ ...product, quantity: 1 });
+          console.log("Cart updated:", cart);
           updateCartDisplay();
           showNotification(`${product.name} added to cart`);
         });
       });
     }
   
-    cartIcon.addEventListener("click", () => cartSidebar.classList.add("cart-visible"));
-    closeCartBtn.addEventListener("click", () => cartSidebar.classList.remove("cart-visible"));
+    if (cartIcon) {
+      cartIcon.addEventListener("click", () => {
+        if (cartSidebar) {
+          cartSidebar.classList.add("cart-visible");
+          console.log("Cart sidebar opened");
+        } else {
+          console.error("Cart sidebar not available to open!");
+        }
+      });
+    }
+  
+    if (closeCartBtn) {
+      closeCartBtn.addEventListener("click", () => {
+        if (cartSidebar) {
+          cartSidebar.classList.remove("cart-visible");
+          console.log("Cart sidebar closed");
+        }
+      });
+    }
+  
     document.addEventListener("click", (e) => {
-      if (!cartSidebar.contains(e.target) && e.target !== cartIcon) {
+      if (cartSidebar && cartIcon && !cartSidebar.contains(e.target) && e.target !== cartIcon) {
         cartSidebar.classList.remove("cart-visible");
       }
     });
-    checkoutBtn.addEventListener("click", () => window.open("checkout.html", "_blank")); // New tab as requested
-    removeAllBtn.addEventListener("click", () => {
-      cart = [];
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartDisplay();
-    });
+  
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener("click", () => {
+        window.location.href = "checkout.html"; // Same tab
+      });
+    }
+  
+    if (removeAllBtn) {
+      removeAllBtn.addEventListener("click", () => {
+        cart = [];
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartDisplay();
+      });
+    }
   
     updateCartDisplay();
+  
     window.addEventListener("productsLoaded", () => {
-      console.log("Products loaded, attaching listeners");
+      console.log("Products loaded event received, attaching cart listeners");
       attachCartListeners();
     });
+  
+    // Fallback: try attaching listeners after a short delay if event missed
+    setTimeout(() => {
+      if (document.querySelectorAll(".add-to-cart").length > 0 && !window.cartListenersAttached) {
+        console.log("Fallback: attaching cart listeners after delay");
+        attachCartListeners();
+        window.cartListenersAttached = true;
+      }
+    }, 2000);
   });
