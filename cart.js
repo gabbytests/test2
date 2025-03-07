@@ -11,15 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkout-btn");
     const removeAllBtn = document.getElementById("remove-all-btn");
   
-    // Check all required elements
-    if (!cartIcon) console.error("Cart icon not found!");
-    if (!cartCount) console.error("Cart count not found!");
-    if (!cartSidebar) console.error("Cart sidebar not found!");
-    if (!closeCartBtn) console.error("Close cart button not found!");
-    if (!cartItemsContainer) console.error("Cart items container not found!");
-    if (!cartTotal) console.error("Cart total not found!");
-    if (!checkoutBtn) console.error("Checkout button not found!");
-    if (!removeAllBtn) console.error("Remove all button not found!");
+    console.log("Cart elements check:");
+    console.log("cartIcon:", !!cartIcon);
+    console.log("cartCount:", !!cartCount);
+    console.log("cartSidebar:", !!cartSidebar);
+    console.log("closeCartBtn:", !!closeCartBtn);
+    console.log("cartItemsContainer:", !!cartItemsContainer);
+    console.log("cartTotal:", !!cartTotal);
+    console.log("checkoutBtn:", !!checkoutBtn);
+    console.log("removeAllBtn:", !!removeAllBtn);
   
     const cartNotification = document.createElement("div");
     cartNotification.id = "cart-notification";
@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function attachCartListeners() {
       const buttons = document.querySelectorAll(".add-to-cart");
       console.log("Found add-to-cart buttons:", buttons.length);
-      if (buttons.length === 0) console.warn("No add-to-cart buttons found!");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           const id = button.getAttribute("data-product-id");
@@ -123,35 +122,31 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-    if (cartIcon) {
+    if (cartIcon && cartSidebar) {
       cartIcon.addEventListener("click", () => {
-        if (cartSidebar) {
-          cartSidebar.classList.add("cart-visible");
-          console.log("Cart sidebar opened");
-        } else {
-          console.error("Cart sidebar not available to open!");
-        }
+        cartSidebar.classList.add("cart-visible");
+        console.log("Cart sidebar opened");
       });
     }
   
-    if (closeCartBtn) {
+    if (closeCartBtn && cartSidebar) {
       closeCartBtn.addEventListener("click", () => {
-        if (cartSidebar) {
-          cartSidebar.classList.remove("cart-visible");
-          console.log("Cart sidebar closed");
-        }
+        cartSidebar.classList.remove("cart-visible");
+        console.log("Cart sidebar closed");
       });
     }
   
-    document.addEventListener("click", (e) => {
-      if (cartSidebar && cartIcon && !cartSidebar.contains(e.target) && e.target !== cartIcon) {
-        cartSidebar.classList.remove("cart-visible");
-      }
-    });
+    if (cartSidebar && cartIcon) {
+      document.addEventListener("click", (e) => {
+        if (!cartSidebar.contains(e.target) && e.target !== cartIcon) {
+          cartSidebar.classList.remove("cart-visible");
+        }
+      });
+    }
   
     if (checkoutBtn) {
       checkoutBtn.addEventListener("click", () => {
-        window.location.href = "checkout.html"; // Same tab
+        window.location.href = "/checkout.html"; // Adjust path if needed
       });
     }
   
@@ -166,16 +161,14 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartDisplay();
   
     window.addEventListener("productsLoaded", () => {
-      console.log("Products loaded event received, attaching cart listeners");
+      console.log("Products loaded, attaching listeners");
       attachCartListeners();
     });
   
-    // Fallback: try attaching listeners after a short delay if event missed
     setTimeout(() => {
-      if (document.querySelectorAll(".add-to-cart").length > 0 && !window.cartListenersAttached) {
-        console.log("Fallback: attaching cart listeners after delay");
+      if (document.querySelectorAll(".add-to-cart").length > 0) {
+        console.log("Fallback: attaching listeners after delay");
         attachCartListeners();
-        window.cartListenersAttached = true;
       }
     }, 2000);
   });
