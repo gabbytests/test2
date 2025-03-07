@@ -24,20 +24,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartNotification = document.createElement("div");
   cartNotification.id = "cart-notification";
   cartNotification.style.cssText = `
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); 
-      background: rgba(0, 0, 0, 0.85); color: white; padding: 15px 20px; border-radius: 12px; 
+      position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-20px); 
+      background: rgba(25, 118, 210, 0.9); color: white; padding: 12px 20px; border-radius: 6px; 
       font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
       display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; z-index: 1000; max-width: 350px;
+      opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; z-index: 1000; max-width: 600px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   `;
   document.body.appendChild(cartNotification);
 
   function showNotification(message) {
       cartNotification.innerHTML = `
-          <span>${message}</span>
+          <span style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis;">${message}</span>
           <button id="view-cart-btn" style="
               background: rgba(255, 255, 255, 0.2); color: white; border: none; 
-              padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
+              padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
               transition: background 0.2s ease;">View Cart</button>
       `;
       cartNotification.style.display = "flex";
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cartNotification.style.opacity = "0";
           cartNotification.style.transform = "translateX(-50%) translateY(-20px)";
           setTimeout(() => cartNotification.style.display = "none", 300);
-      }, 3000); // Stays visible for 3 seconds
+      }, 5000); // Stays visible for 5 seconds
 
       // Add event listener to View Cart button
       const viewCartBtn = document.getElementById("view-cart-btn");
