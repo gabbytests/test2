@@ -102,16 +102,16 @@
     .quantity-controls {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
     }
     
     .quantity-btn {
         background: #e5e5ea;
         border: none;
-        width: 36px;
-        height: 36px;
+        width: 30px; /* Smaller size */
+        height: 30px;
         border-radius: 50%;
-        font-size: 18px;
+        font-size: 16px;
         cursor: pointer;
         transition: background 0.3s ease;
         display: flex;
@@ -125,9 +125,9 @@
     }
     
     .quantity {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
-        min-width: 30px;
+        min-width: 24px;
         text-align: center;
     }
     
@@ -191,26 +191,22 @@
         cursor: not-allowed;
     }
     
-    /* Mobile Fix for Quantity Buttons */
+    /* Mobile Fix for Smaller Quantity Buttons */
     @media (max-width: 600px) {
         .quantity-controls {
-            gap: 6px; /* Reduce spacing */
+            gap: 5px; /* Reduced spacing */
         }
     
         .quantity-btn {
-            width: 40px; /* Bigger for better tap targets */
-            height: 40px;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 26px; /* Even smaller for compact look */
+            height: 26px;
+            font-size: 14px;
             font-weight: bold;
         }
     
         .quantity {
-            font-size: 20px;
-            font-weight: bold;
-            min-width: 32px;
+            font-size: 16px;
+            min-width: 22px;
         }
     }
     </style>
