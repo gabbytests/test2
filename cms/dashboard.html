@@ -327,29 +327,53 @@
         grid-template-columns: 1fr;
         padding: 12px;
       }
-      .product-item {
-        grid-template-columns: 40px 1fr;
-        gap: 8px;
+      .products-section {
         padding: 10px;
       }
+      #productList {
+        gap: 6px;
+      }
+      .product-item {
+        grid-template-columns: 50px 1fr auto;
+        grid-template-areas: 
+          "image info actions";
+        padding: 8px;
+        gap: 8px;
+      }
       .product-item img {
-        width: 40px;
-        height: 40px;
+        grid-area: image;
+        width: 50px;
+        height: 50px;
       }
       .product-info {
-        margin-left: 10px;
-        font-size: 13px;
+        grid-area: info;
+        margin-left: 8px;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .product-info .name {
+        font-size: 14px;
       }
       .product-info .price {
         font-size: 12px;
       }
       .actions {
-        grid-column: 1 / -1;
-        justify-content: flex-end;
+        grid-area: actions;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
       }
       .actions button {
-        padding: 5px 8px;
+        padding: 6px 10px;
         font-size: 12px;
+        min-width: 60px;
+      }
+      .button-group {
+        flex-direction: row;
+        justify-content: space-between;
       }
       #imagePreview {
         max-width: 80px;
@@ -435,7 +459,6 @@
       <div class="notification" id="notification"></div>
     </div>
   
-    <!-- Use Firebase v8 Legacy SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
@@ -459,111 +482,118 @@
     </script>
     <script src="cms-script.js"></script>
     <script>
-      const menuToggle = document.querySelector('.menu-toggle');
-      const sidebar = document.querySelector('.sidebar');
-      menuToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-      });
-  
-      document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-          sidebar.classList.remove('active');
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!localStorage.getItem('authenticated')) {
+          window.location.href = 'login.html';
+          return;
         }
-      });
+
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+        });
   
-      const navLinks = document.querySelectorAll('.sidebar ul li a');
-      const sections = document.querySelectorAll('.section');
-      const headerTitle = document.getElementById('header-title');
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const sectionId = link.getAttribute('data-section');
-          if (!sectionId && link.textContent.trim() === 'Logout') {
-            logout();
-            return;
-          }
-  
-          navLinks.forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-  
-          sections.forEach(section => section.classList.remove('active'));
-          const targetSection = document.getElementById(sectionId);
-          if (targetSection) {
-            targetSection.classList.add('active');
-            headerTitle.textContent = link.textContent.trim();
-          }
-  
-          if (sectionId === 'products-section') {
-            displayProducts();
-          } else if (sectionId === 'dashboard-section') {
-            updateDashboardStats();
-          }
-  
-          if (window.innerWidth <= 750) {
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
             sidebar.classList.remove('active');
           }
         });
-      });
   
-      function logout() {
-        localStorage.removeItem("authenticated");
-        window.location.href = "login.html";
-      }
+        const navLinks = document.querySelectorAll('.sidebar ul li a');
+        const sections = document.querySelectorAll('.section');
+        const headerTitle = document.getElementById('header-title');
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = link.getAttribute('data-section');
+            if (!sectionId && link.textContent.trim() === 'Logout') {
+              logout();
+              return;
+            }
   
-      function updateDashboardStats() {
-        const totalProducts = document.getElementById('total-products');
-        firebase.database().ref('products').once('value', (snapshot) => {
-          totalProducts.textContent = snapshot.numChildren() || 0;
-        }, (error) => {
-          console.error("Error fetching product count:", error);
-          showNotification("Failed to load product count", true);
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+  
+            sections.forEach(section => section.classList.remove('active'));
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+              targetSection.classList.add('active');
+              headerTitle.textContent = link.textContent.trim();
+            }
+  
+            if (sectionId === 'products-section') {
+              displayProducts();
+            } else if (sectionId === 'dashboard-section') {
+              updateDashboardStats();
+            }
+  
+            if (window.innerWidth <= 750) {
+              sidebar.classList.remove('active');
+            }
+          });
         });
-      }
   
-      const settingsForm = document.getElementById('settings-form');
-      const passwordRef = firebase.database().ref('settings/password');
-      settingsForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+        function logout() {
+          localStorage.removeItem("authenticated");
+          window.location.href = "login.html";
+        }
   
-        passwordRef.once('value', (snapshot) => {
-          const storedPassword = snapshot.val() || 'admin123';
-          if (currentPassword !== storedPassword) {
-            showNotification('Current password is incorrect', true);
-          } else if (newPassword !== confirmPassword) {
-            showNotification('New passwords do not match', true);
-          } else {
-            passwordRef.set(newPassword)
-              .then(() => {
-                showNotification('Password updated successfully');
-                settingsForm.reset();
-              })
-              .catch(error => {
-                console.error("Error updating password:", error);
-                showNotification('Error updating password: ' + error.message, true);
-              });
-          }
-        }, (error) => {
-          console.error("Error fetching password:", error);
-          showNotification("Failed to load current password", true);
+        function updateDashboardStats() {
+          const totalProducts = document.getElementById('total-products');
+          firebase.database().ref('products').once('value', (snapshot) => {
+            totalProducts.textContent = snapshot.numChildren() || 0;
+          }, (error) => {
+            console.error("Error fetching product count:", error);
+            showNotification("Failed to load product count", true);
+          });
+        }
+  
+        const settingsForm = document.getElementById('settings-form');
+        const passwordRef = firebase.database().ref('settings/password');
+        settingsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const currentPassword = document.getElementById('currentPassword').value;
+          const newPassword = document.getElementById('newPassword').value;
+          const confirmPassword = document.getElementById('confirmPassword').value;
+  
+          passwordRef.once('value', (snapshot) => {
+            const storedPassword = snapshot.val() || 'admin123';
+            if (currentPassword !== storedPassword) {
+              showNotification('Current password is incorrect', true);
+            } else if (newPassword !== confirmPassword) {
+              showNotification('New passwords do not match', true);
+            } else {
+              passwordRef.set(newPassword)
+                .then(() => {
+                  showNotification('Password updated successfully');
+                  settingsForm.reset();
+                })
+                .catch(error => {
+                  console.error("Error updating password:", error);
+                  showNotification('Error updating password: ' + error.message, true);
+                });
+            }
+          }, (error) => {
+            console.error("Error fetching password:", error);
+            showNotification("Failed to load current password", true);
+          });
         });
+  
+        function showNotification(message, isError = false) {
+          const notification = document.getElementById('notification');
+          notification.textContent = message;
+          notification.classList.toggle('error', isError);
+          notification.style.display = 'block';
+          notification.style.opacity = '1';
+          setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.style.display = 'none', 300);
+          }, 2000);
+        }
+  
+        updateDashboardStats();
       });
-  
-      function showNotification(message, isError = false) {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.classList.toggle('error', isError);
-        notification.style.display = 'block';
-        notification.style.opacity = '1';
-        setTimeout(() => {
-          notification.style.opacity = '0';
-          setTimeout(() => notification.style.display = 'none', 300);
-        }, 2000);
-      }
-  
-      updateDashboardStats();
     </script>
-  </body>
+</body>
 </html>
