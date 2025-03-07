@@ -1377,107 +1377,105 @@ Item added to your cart
 
 
         <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
-    authDomain: "ccdb-88f09.firebaseapp.com",
-    databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
-    projectId: "ccdb-88f09",
-    storageBucket: "ccdb-88f09.firebasestorage.app",
-    messagingSenderId: "526809144784",
-    appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
-    measurementId: "G-WNJ376BBZF"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  console.log("Firebase initialized");
-
-  function renderProducts(products) {
-    const productList = document.getElementById("product-list");
-    if (!productList) {
-      console.error("Product list element not found!");
-      return;
-    }
-    if (!products || products.length === 0) {
-      productList.innerHTML = "No products available.";
-    } else {
-      const html = products.map((product, index) => `
-        <li class="scroll-trigger animate--slide-in" data-cascade style="--animation-order: ${index + 1};">
-          <div class="card-wrapper product-card-wrapper">
-            <div class="card card--standard card--media">
-              <div class="card__inner color-scheme-2 gradient ratio">
-                <div class="card__media">
-                  <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}" class="motion-reduce" loading="eager">
-                </div>
-              </div>
-              <div class="card__content">
-                <h3 class="card__heading h5">${product.name}</h3>
-                <div class="card-information">
-                  <div class="price">
-                    <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
+          const firebaseConfig = {
+            apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+            authDomain: "ccdb-88f09.firebaseapp.com",
+            databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+            projectId: "ccdb-88f09",
+            storageBucket: "ccdb-88f09.firebasestorage.app",
+            messagingSenderId: "526809144784",
+            appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+            measurementId: "G-WNJ376BBZF"
+          };
+        
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized");
+        
+          function renderProducts(products) {
+            const productList = document.getElementById("product-list");
+            if (!products || products.length === 0) {
+              productList.innerHTML = "No products available.";
+              return;
+            }
+            // Build HTML string once for faster rendering
+            const html = products.map((product, index) => `
+              <li class="scroll-trigger animate--slide-in" data-cascade style="--animation-order: ${index + 1};">
+                <div class="card-wrapper product-card-wrapper">
+                  <div class="card card--standard card--media">
+                    <div class="card__inner color-scheme-2 gradient ratio">
+                      <div class="card__media">
+                        <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}" class="motion-reduce" loading="eager">
+                      </div>
+                    </div>
+                    <div class="card__content">
+                      <h3 class="card__heading h5">${product.name}</h3>
+                      <div class="card-information">
+                        <div class="price">
+                          <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <div class="quick-add no-js-hidden">
+                        <button type="button" class="add-to-cart button button--full-width button--secondary"
+                          data-product-id="${product.id}"
+                          data-name="${product.name}"
+                          data-price="${product.price}"
+                          data-image="${product.image || ''}">
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="quick-add no-js-hidden">
-                  <button type="button" class="add-to-cart button button--full-width button--secondary"
-                    data-product-id="${product.id}"
-                    data-name="${product.name}"
-                    data-price="${product.price}"
-                    data-image="${product.image || ''}">
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-      `).join('');
-      productList.innerHTML = html;
-    }
-    console.log("Products rendered, dispatching productsLoaded event");
-    window.dispatchEvent(new Event('productsLoaded'));
-  }
-
-  function loadProducts() {
-    const productList = document.getElementById("product-list");
-    if (!productList) {
-      console.error("Product list not found during load!");
-      return;
-    }
-    productList.innerHTML = "Loading products...";
-
-    const cachedProducts = JSON.parse(localStorage.getItem('products')) || [];
-    if (cachedProducts.length > 0) {
-      console.log("Loading cached products:", cachedProducts);
-      renderProducts(cachedProducts);
-    } else {
-      console.log("No cached products");
-    }
-
-    const productsRef = firebase.database().ref('products');
-    productsRef.once('value', (snapshot) => {
-      const products = snapshot.val();
-      console.log("Firebase products:", products);
-      const productArray = products ? Object.keys(products).map(key => ({
-        id: key,
-        name: products[key].name || "Unnamed",
-        price: parseFloat(products[key].price) || 0,
-        image: products[key].image || ''
-      })) : [];
-      localStorage.setItem('products', JSON.stringify(productArray));
-      if (JSON.stringify(productArray) !== JSON.stringify(cachedProducts)) {
-        console.log("Updating with Firebase data:", productArray);
-        renderProducts(productArray);
-      }
-    }, (error) => {
-      console.error("Firebase error:", error);
-      if (cachedProducts.length === 0) productList.innerHTML = "Failed to load products.";
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM loaded, loading products");
-    loadProducts();
-  });
-</script>
+              </li>
+            `).join('');
+            productList.innerHTML = html;
+            window.dispatchEvent(new Event('productsLoaded'));
+          }
+        
+          function loadProducts() {
+            const productList = document.getElementById("product-list");
+            productList.innerHTML = "Loading products...";
+        
+            // Load from localStorage first for instant display
+            const cachedProducts = JSON.parse(localStorage.getItem('products')) || [];
+            if (cachedProducts.length > 0) {
+              console.log("Loading cached products:", cachedProducts);
+              renderProducts(cachedProducts);
+            }
+        
+            // Fetch from Firebase in the background
+            const productsRef = firebase.database().ref('products');
+            productsRef.once('value', (snapshot) => {
+              const products = snapshot.val();
+              console.log("Firebase products:", products);
+              if (products) {
+                const productArray = Object.keys(products).map(key => ({
+                  id: key,
+                  name: products[key].name || "Unnamed",
+                  price: parseFloat(products[key].price) || 0,
+                  image: products[key].image || ''
+                }));
+                localStorage.setItem('products', JSON.stringify(productArray));
+                // Only re-render if the data has changed
+                if (JSON.stringify(productArray) !== JSON.stringify(cachedProducts)) {
+                  console.log("Updating with new Firebase data:", productArray);
+                  renderProducts(productArray);
+                }
+              } else {
+                localStorage.setItem('products', JSON.stringify([]));
+                if (cachedProducts.length > 0) renderProducts([]);
+              }
+            }, (error) => {
+              console.error("Firebase error:", error);
+              if (cachedProducts.length === 0) productList.innerHTML = "Failed to load products.";
+            });
+          }
+        
+          document.addEventListener("DOMContentLoaded", () => {
+            console.log("DOM loaded, loading products");
+            loadProducts();
+          });
+        </script>
 
 
 
