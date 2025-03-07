@@ -122,17 +122,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
+    // Sidebar toggle
     if (cartIcon && cartSidebar) {
-      cartIcon.addEventListener("click", () => {
+      cartIcon.addEventListener("click", (e) => {
+        e.preventDefault();
         cartSidebar.classList.add("cart-visible");
-        console.log("Cart sidebar opened");
+        console.log("Cart sidebar opened via cart-icon click");
       });
+    } else {
+      console.error("Cart icon or sidebar missing, cannot attach open listener");
     }
   
     if (closeCartBtn && cartSidebar) {
       closeCartBtn.addEventListener("click", () => {
         cartSidebar.classList.remove("cart-visible");
-        console.log("Cart sidebar closed");
+        console.log("Cart sidebar closed via close button");
       });
     }
   
@@ -140,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.addEventListener("click", (e) => {
         if (!cartSidebar.contains(e.target) && e.target !== cartIcon) {
           cartSidebar.classList.remove("cart-visible");
+          console.log("Cart sidebar closed via outside click");
         }
       });
     }
@@ -169,6 +174,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (document.querySelectorAll(".add-to-cart").length > 0) {
         console.log("Fallback: attaching listeners after delay");
         attachCartListeners();
+      }
+      if (cartIcon && cartSidebar && !cartIcon.onclick) {
+        console.log("Fallback: reattaching cart icon listener");
+        cartIcon.addEventListener("click", () => {
+          cartSidebar.classList.add("cart-visible");
+          console.log("Cart sidebar opened via fallback");
+        });
       }
     }, 2000);
   });
