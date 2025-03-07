@@ -1035,7 +1035,7 @@ for (var attr in meta) {
                       Contact
                     </a></li><li><a
                       id="HeaderDrawer-contact"
-                      href="cms/login.html" target="_blank"
+                      href="cms/login.html"
                       class="menu-drawer__menu-item list-menu__item link link--text focus-inset"
                       
                     >
@@ -1086,7 +1086,7 @@ for (var attr in meta) {
             >Contact</span>
           </a></li><li><a
             id="HeaderMenu-contact"
-            href="cms/login.html" target="_blank"
+            href="cms/login.html"
             class="header__menu-item list-menu__item link link--text focus-inset"
             
           >
@@ -1375,123 +1375,123 @@ Item added to your cart
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
         <script>
-          const firebaseConfig = {
-            apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
-            authDomain: "ccdb-88f09.firebaseapp.com",
-            databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
-            projectId: "ccdb-88f09",
-            storageBucket: "ccdb-88f09.firebasestorage.app",
-            messagingSenderId: "526809144784",
-            appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
-            measurementId: "G-WNJ376BBZF"
-          };
-        
-          try {
-            firebase.initializeApp(firebaseConfig);
-            console.log("Firebase initialized successfully in index.html");
-          } catch (error) {
-            console.error("Firebase initialization failed:", error);
-          }
-        
-          function loadProducts() {
-            const productList = document.getElementById("product-list");
-            if (!productList) {
-              console.error("Product list element not found!");
-              return;
-            }
-            productList.innerHTML = "Loading products...";
-            const productsRef = firebase.database().ref('products');
-            productsRef.once('value', (snapshot) => {
-              productList.innerHTML = "";
-              const products = snapshot.val();
-              console.log("Raw Firebase data:", products);
-        
-              if (products) {
-                // Convert Firebase object to array with consistent structure
-                const productArray = Object.keys(products).map(key => ({
-                  id: key, // Use Firebase key as ID
-                  name: products[key].name || "Unnamed Product",
-                  price: parseFloat(products[key].price) || 0,
-                  image: products[key].image || ''
-                }));
-                console.log("Processed product array:", productArray);
-        
-                // Save to localStorage
-                localStorage.setItem('products', JSON.stringify(productArray));
-                console.log("Saved to localStorage:", JSON.parse(localStorage.getItem('products')));
-        
-                // Render products
-                productArray.forEach((product, index) => {
-                  const li = document.createElement("li");
-                  li.className = "scroll-trigger animate--slide-in";
-                  li.setAttribute("data-cascade", "");
-                  li.style = `--animation-order: ${index + 1};`;
-                  li.innerHTML = `
-                    <div class="card-wrapper product-card-wrapper underline-links-hover">
-                      <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
-                        <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
-                          <div class="card__media">
-                            <div class="media media--transparent media--hover-effect">
-                              <img src="${product.image}" alt="${product.name}" class="motion-reduce" loading="eager">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card__content">
-                          <div class="card__information">
-                            <h3 class="card__heading h5">
-                              <span class="full-unstyled-link">${product.name}</span>
-                            </h3>
-                            <div class="card-information">
-                              <div class="price">
-                                <div class="price__container">
-                                  <div class="price__regular">
-                                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                                    <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="quick-add no-js-hidden">
-                            <button
-                              type="button"
-                              class="add-to-cart quick-add__submit button button--full-width button--secondary"
-                              data-product-id="${product.id}"
-                              data-name="${product.name}"
-                              data-price="${product.price}"
-                              data-image="${product.image}"
-                            >
-                              Add to Cart
-                            </button>
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+    authDomain: "ccdb-88f09.firebaseapp.com",
+    databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+    projectId: "ccdb-88f09",
+    storageBucket: "ccdb-88f09.firebasestorage.app",
+    messagingSenderId: "526809144784",
+    appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+    measurementId: "G-WNJ376BBZF"
+  };
+
+  try {
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully in index.html");
+  } catch (error) {
+    console.error("Firebase initialization failed:", error);
+  }
+
+  function loadProducts() {
+    const productList = document.getElementById("product-list");
+    if (!productList) {
+      console.error("Product list element not found!");
+      return;
+    }
+    productList.innerHTML = "Loading products...";
+    const productsRef = firebase.database().ref('products');
+    productsRef.once('value', (snapshot) => {
+      productList.innerHTML = "";
+      const products = snapshot.val();
+      console.log("Raw Firebase data:", products);
+
+      if (products) {
+        // Convert Firebase object to array with consistent structure
+        const productArray = Object.keys(products).map(key => ({
+          id: key, // Use Firebase key as ID
+          name: products[key].name || "Unnamed Product",
+          price: parseFloat(products[key].price) || 0,
+          image: products[key].image || ''
+        }));
+        console.log("Processed product array:", productArray);
+
+        // Save to localStorage
+        localStorage.setItem('products', JSON.stringify(productArray));
+        console.log("Saved to localStorage:", JSON.parse(localStorage.getItem('products')));
+
+        // Render products
+        productArray.forEach((product, index) => {
+          const li = document.createElement("li");
+          li.className = "scroll-trigger animate--slide-in";
+          li.setAttribute("data-cascade", "");
+          li.style = `--animation-order: ${index + 1};`;
+          li.innerHTML = `
+            <div class="card-wrapper product-card-wrapper underline-links-hover">
+              <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
+                <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
+                  <div class="card__media">
+                    <div class="media media--transparent media--hover-effect">
+                      <img src="${product.image}" alt="${product.name}" class="motion-reduce" loading="eager">
+                    </div>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <div class="card__information">
+                    <h3 class="card__heading h5">
+                      <span class="full-unstyled-link">${product.name}</span>
+                    </h3>
+                    <div class="card-information">
+                      <div class="price">
+                        <div class="price__container">
+                          <div class="price__regular">
+                            <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                            <span class="price-item price-item--regular">$${product.price.toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  `;
-                  productList.appendChild(li);
-                });
-        
-                // Notify cart.js that products are ready
-                window.dispatchEvent(new Event('productsLoaded'));
-              } else {
-                console.log("No products found in Firebase.");
-                productList.innerHTML = "No products available.";
-                localStorage.setItem('products', JSON.stringify([]));
-                window.dispatchEvent(new Event('productsLoaded'));
-              }
-            }, (error) => {
-              console.error("Error fetching products from Firebase:", error);
-              productList.innerHTML = "Failed to load products.";
-              localStorage.setItem('products', JSON.stringify([]));
-              window.dispatchEvent(new Event('productsLoaded'));
-            });
-          }
-        
-          document.addEventListener("DOMContentLoaded", () => {
-            console.log("DOM loaded, calling loadProducts");
-            loadProducts();
-          });
-        </script>
+                  </div>
+                  <div class="quick-add no-js-hidden">
+                    <button
+                      type="button"
+                      class="add-to-cart quick-add__submit button button--full-width button--secondary"
+                      data-product-id="${product.id}"
+                      data-name="${product.name}"
+                      data-price="${product.price}"
+                      data-image="${product.image}"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          productList.appendChild(li);
+        });
+
+        // Notify cart.js that products are ready
+        window.dispatchEvent(new Event('productsLoaded'));
+      } else {
+        console.log("No products found in Firebase.");
+        productList.innerHTML = "No products available.";
+        localStorage.setItem('products', JSON.stringify([]));
+        window.dispatchEvent(new Event('productsLoaded'));
+      }
+    }, (error) => {
+      console.error("Error fetching products from Firebase:", error);
+      productList.innerHTML = "Failed to load products.";
+      localStorage.setItem('products', JSON.stringify([]));
+      window.dispatchEvent(new Event('productsLoaded'));
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded, calling loadProducts");
+    loadProducts();
+  });
+</script>
 
 
 
