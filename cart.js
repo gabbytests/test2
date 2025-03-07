@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cartNotification.style.opacity = "0";
           cartNotification.style.transform = "translateX(-50%) translateY(-20px)";
           setTimeout(() => cartNotification.style.display = "none", 300);
-      }, 5000); // Stays visible for 5 seconds
+      }, 3000); // Stays visible for 5 seconds
 
       // Add event listener to View Cart button
       const viewCartBtn = document.getElementById("view-cart-btn");
