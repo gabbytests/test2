@@ -91,10 +91,10 @@
     // Fallback to static products if CMS is empty
     if (products.length === 0) {
       products = [
-        { id: "1", name: "Tight Cropped Fleece", price: 49.99, image: "https://gabbytests.github.io/test1/img/pd5.jpg" },
-        { id: "2", name: "Flared Casual Skirt", price: 39.99, image: "https://gabbytests.github.io/test1/img/pd6.jpg" },
-        { id: "3", name: "Loose Cropped Fleece", price: 44.99, image: "https://gabbytests.github.io/test1/img/pd7.jpg" },
-        { id: "4", name: "Stylish Everyday Glasses", price: 9.99, image: "https://gabbytests.github.io/test1/img/ww.jpg" }
+        { id: "1", name: "Tight Cropped Fleece", price: 49.99, image: "https://gabbytests.github.io/test2/img/pd5.jpg" },
+        { id: "2", name: "Flared Casual Skirt", price: 39.99, image: "https://gabbytests.github.io/test2/img/pd6.jpg" },
+        { id: "3", name: "Loose Cropped Fleece", price: 44.99, image: "https://gabbytests.github.io/test2/img/pd7.jpg" },
+        { id: "4", name: "Stylish Everyday Glasses", price: 9.99, image: "https://gabbytests.github.io/test2/img/ww.jpg" }
       ];
       localStorage.setItem("products", JSON.stringify(products));
     }
