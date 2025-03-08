@@ -131,6 +131,90 @@
       font-weight: 600;
       margin: 0;
     }
+    .orders-section {
+      margin-top: 20px;
+    }
+    .orders-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .order-item:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .order-info {
+      flex: 1;
+      font-size: 14px;
+      min-width: 0;
+    }
+    .order-info .order-id {
+      font-weight: 500;
+      color: #1d1d1f;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .order-info .order-date {
+      color: #666;
+      font-size: 12px;
+    }
+    .order-info .order-status {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .order-status.pending {
+      background: #ffd700;
+      color: #333;
+    }
+    .order-status.completed {
+      background: #4caf50;
+      color: #fff;
+    }
+    .order-status.cancelled {
+      background: #ff3b30;
+      color: #fff;
+    }
+    .order-amount {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-left: 10px;
+    }
+    .order-actions {
+      margin-left: 10px;
+    }
+    .order-actions button {
+      padding: 5px 10px;
+      font-size: 12px;
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .order-actions button:hover {
+      background: #388e3c;
+    }
     #product-form {
       display: flex;
       flex-direction: column;
@@ -154,10 +238,10 @@
       outline: none;
     }
     #productImage {
-      display: block; /* Default for adding new products */
+      display: block;
     }
     #productImage.hidden {
-      display: none; /* Hide when editing */
+      display: none;
     }
     .button-group {
       display: flex;
@@ -283,7 +367,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #4CAF50; /* Green for success */
+      background: #4CAF50;
       padding: 20px 30px;
       border-radius: 8px;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -295,7 +379,7 @@
       transition: opacity 0.5s ease;
     }
     .notification.error {
-      background: #ff3b30; /* Red for errors */
+      background: #ff3b30;
       color: #fff;
     }
     .menu-toggle {
@@ -382,354 +466,435 @@
         font-size: 16px;
         padding: 15px 20px;
       }
+      .order-item {
+        padding: 8px;
+      }
+      .order-info {
+        font-size: 12px;
+      }
+      .order-info .order-date,
+      .order-info .order-status {
+        font-size: 10px;
+      }
+      .order-amount {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
-    <div class="container">
-      <nav class="sidebar">
-        <h2>Racour CMS</h2>
-        <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
-          <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
-          <li><a href="#" data-section="products-section">Products</a></li>
-          <li><a href="#" data-section="settings-section">Settings</a></li>
-          <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </nav>
-  
-      <div class="main-content">
-        <div class="header">
-          <button class="menu-toggle">☰</button>
-          <h1 id="header-title">Dashboard</h1>
-          <div class="user-info"><span><a href="../index.html">Back To Store</a></span></div>
-        </div>
-  
-        <div class="section dashboard-section active" id="dashboard-section">
-          <h2>Welcome, Admin</h2>
-          <p>Here’s a quick overview of your store.</p>
-          <div class="stats">
-            <div class="stat-card">
-              <h3>Total Products</h3>
-              <p id="total-products">0</p>
-            </div>
+  <div class="container">
+    <nav class="sidebar">
+      <h2>Racour CMS</h2>
+      <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
+        <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
+        <li><a href="#" data-section="products-section">Products</a></li>
+        <li><a href="#" data-section="settings-section">Settings</a></li>
+        <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="main-content">
+      <div class="header">
+        <button class="menu-toggle">☰</button>
+        <h1 id="header-title">Dashboard</h1>
+        <div class="user-info"><span><a href="../index.html">Back To Store</a></span></div>
+      </div>
+
+      <div class="section dashboard-section active" id="dashboard-section">
+        <h2>Welcome, Admin</h2>
+        <p>Here’s a quick overview of your store.</p>
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Products</h3>
+            <p id="total-products">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Orders</h3>
+            <p id="total-orders">0</p>
           </div>
         </div>
-  
-        <div class="section products-section" id="products-section">
-          <h2>Manage Products</h2>
-          <form id="product-form">
-            <input type="hidden" id="productId">
-            <input type="text" id="productName" placeholder="Product Name" required>
-            <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
-            <input type="file" id="productImage" accept="image/*" onchange="updatePreview()">
-            <div class="button-group">
-              <button type="submit">Save Product</button>
-              <button type="button" class="secondary" onclick="clearForm()">Clear</button>
-            </div>
-          </form>
-          <div class="product-list-title">Product List</div>
-          <div id="productList"></div>
-        </div>
-  
-        <div class="section settings-section" id="settings-section">
-          <h2>Settings</h2>
-          <form id="settings-form">
-            <div class="settings-option">
-              <label for="currentPassword">Current Password</label>
-              <input type="password" id="currentPassword" placeholder="Enter current password" required>
-            </div>
-            <div class="settings-option">
-              <label for="newPassword">New Password</label>
-              <input type="password" id="newPassword" placeholder="Enter new password" required>
-            </div>
-            <div class="settings-option">
-              <label for="confirmPassword">Confirm New Password</label>
-              <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
-            </div>
-            <div class="button-group">
-              <button type="submit">Update Password</button>
-            </div>
-          </form>
+        <div class="orders-section">
+          <h3>Recent Orders</h3>
+          <div id="orderList" class="order-list"></div>
         </div>
       </div>
-  
-      <div class="notification" id="notification"></div>
+
+      <div class="section products-section" id="products-section">
+        <h2>Manage Products</h2>
+        <form id="product-form">
+          <input type="hidden" id="productId">
+          <input type="text" id="productName" placeholder="Product Name" required>
+          <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
+          <input type="file" id="productImage" accept="image/*" onchange="updatePreview()">
+          <div class="button-group">
+            <button type="submit">Save Product</button>
+            <button type="button" class="secondary" onclick="clearForm()">Clear</button>
+          </div>
+        </form>
+        <div class="product-list-title">Product List</div>
+        <div id="productList"></div>
+      </div>
+
+      <div class="section settings-section" id="settings-section">
+        <h2>Settings</h2>
+        <form id="settings-form">
+          <div class="settings-option">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password" required>
+          </div>
+          <div class="settings-option">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" placeholder="Enter new password" required>
+          </div>
+          <div class="settings-option">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+          </div>
+          <div class="button-group">
+            <button type="submit">Update Password</button>
+          </div>
+        </form>
+      </div>
     </div>
-  
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
-        authDomain: "ccdb-88f09.firebaseapp.com",
-        databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
-        projectId: "ccdb-88f09",
-        storageBucket: "ccdb-88f09.firebasestorage.app",
-        messagingSenderId: "526809144784",
-        appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
-        measurementId: "G-WNJ376BBZF"
-      };
-      try {
-        firebase.initializeApp(firebaseConfig);
-        console.log("Firebase initialized successfully");
-      } catch (error) {
-        console.error("Firebase initialization failed:", error);
-        showNotification("Failed to connect to database", true);
-      }
-    </script>
-    <script>
-      const db = firebase.database();
-      const productsRef = db.ref('products');
-      let productsCache = null;
 
-      function loadProducts() {
-        if (productsCache) {
-          displayProducts(productsCache);
-          return;
-        }
-        productsRef.once('value', (snapshot) => {
-          productsCache = snapshot.val() || {};
-          localStorage.setItem("products", JSON.stringify(productsCache));
-          displayProducts(productsCache);
-        }, (error) => {
-          console.error("Error loading products:", error);
-          showNotification("Failed to load products", true);
+    <div class="notification" id="notification"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+      authDomain: "ccdb-88f09.firebaseapp.com",
+      databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+      projectId: "ccdb-88f09",
+      storageBucket: "ccdb-88f09.firebasestorage.app",
+      messagingSenderId: "526809144784",
+      appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+      measurementId: "G-WNJ376BBZF"
+    };
+    try {
+      firebase.initializeApp(firebaseConfig);
+      console.log("Firebase initialized successfully");
+    } catch (error) {
+      console.error("Firebase initialization failed:", error);
+      showNotification("Failed to connect to database", true);
+    }
+
+    const db = firebase.firestore();
+    const productsRef = firebase.database().ref('products');
+    let productsCache = null;
+
+    function loadProducts() {
+      if (productsCache) {
+        displayProducts(productsCache);
+        return;
+      }
+      productsRef.once('value', (snapshot) => {
+        productsCache = snapshot.val() || {};
+        localStorage.setItem("products", JSON.stringify(productsCache));
+        displayProducts(productsCache);
+      }, (error) => {
+        console.error("Error loading products:", error);
+        showNotification("Failed to load products", true);
+      });
+    }
+
+    function displayProducts(products) {
+      const productList = document.getElementById("productList");
+      productList.innerHTML = "";
+      if (!products || Object.keys(products).length === 0) {
+        productList.innerHTML = "<p>No products available.</p>";
+        return;
+      }
+      Object.entries(products).forEach(([id, product]) => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        div.innerHTML = `
+          <img src="${product.image || ''}" alt="${product.name}">
+          <div class="product-info">
+            <div class="name">${product.name}</div>
+            <div class="price">$${product.price.toFixed(2)}</div>
+          </div>
+          <div class="actions">
+            <button onclick="editProduct('${id}')">Edit</button>
+            <button onclick="deleteProduct('${id}')">Delete</button>
+          </div>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function updatePreview() {
+      const fileInput = document.getElementById('productImage');
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          saveProduct(null, document.getElementById('productName').value, parseFloat(document.getElementById('productPrice').value), e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    document.getElementById('product-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('productId').value;
+      const name = document.getElementById('productName').value;
+      const price = parseFloat(document.getElementById('productPrice').value);
+      const fileInput = document.getElementById('productImage');
+      const file = fileInput.files[0];
+
+      if (id) {
+        // For editing an existing product
+        productsRef.child(id).once('value', (snapshot) => {
+          const existingProduct = snapshot.val();
+          const image = file ? null : (existingProduct.image || null); // Use existing image unless a new file is uploaded
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              saveProduct(id, name, price, e.target.result);
+            };
+            reader.readAsDataURL(file);
+          } else {
+            saveProduct(id, name, price, image);
+          }
+        }).catch(error => {
+          console.error("Error fetching product for edit:", error);
+          showNotification('Error editing product: ' + error.message, true);
         });
+      } else if (file) {
+        // For adding a new product with an image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          saveProduct(null, name, price, e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // For adding a new product without an image
+        saveProduct(null, name, price, null);
       }
+    });
 
-      function displayProducts(products) {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = "";
-        if (!products || Object.keys(products).length === 0) {
-          productList.innerHTML = "<p>No products available.</p>";
+    function saveProduct(id, name, price, image) {
+      const productData = { name, price };
+      if (image) productData.image = image;
+
+      const ref = id ? productsRef.child(id) : productsRef.push();
+      ref.set(productData)
+        .then(() => {
+          productsCache = null;
+          showNotification(id ? 'Product Updated' : 'Product Added');
+          clearForm();
+          loadProducts();
+        })
+        .catch(error => {
+          console.error("Error saving product:", error);
+          showNotification('Error saving product: ' + error.message, true);
+        });
+    }
+
+    function editProduct(id) {
+      productsRef.child(id).once('value', (snapshot) => {
+        const product = snapshot.val();
+        document.getElementById('productId').value = id;
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productImage').classList.add('hidden');
+      });
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        productsRef.child(id).remove()
+          .then(() => {
+            productsCache = null;
+            showNotification('Product Deleted');
+            loadProducts();
+          })
+          .catch(error => showNotification('Error deleting product', true));
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('product-form').reset();
+      document.getElementById('productId').value = '';
+      document.getElementById('productImage').classList.remove('hidden');
+    }
+
+    function markOrderCompleted(orderId) {
+      db.collection('orders').doc(orderId).update({
+        status: 'Completed'
+      })
+      .then(() => {
+        showNotification('Order marked as Completed');
+      })
+      .catch(error => {
+        console.error("Error updating order status:", error);
+        showNotification('Error marking order as Completed', true);
+      });
+    }
+
+    function loadOrders() {
+      const orderList = document.getElementById('orderList');
+      db.collection('orders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+        orderList.innerHTML = '';
+        const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (orders.length === 0) {
+          orderList.innerHTML = '<p>No orders available.</p>';
           return;
         }
-        Object.entries(products).forEach(([id, product]) => {
-          const div = document.createElement("div");
-          div.className = "product-item";
+        orders.forEach(order => {
+          const div = document.createElement('div');
+          div.className = 'order-item';
+          const date = order.timestamp ? new Date(order.timestamp.toMillis()).toLocaleString() : 'N/A';
+          const statusClass = order.status ? order.status.toLowerCase() : 'pending';
+
+          const billingInfo = `
+            <strong>Billing:</strong> ${order.billing.fullName}, ${order.billing.email}, ${order.billing.address}, ${order.billing.city}
+          `;
+          const cartItems = order.cart.map(item => `${item.name} x${item.quantity} ($${item.price.toFixed(2)})`).join(', ');
+
           div.innerHTML = `
-            <img src="${product.image || ''}" alt="${product.name}">
-            <div class="product-info">
-              <div class="name">${product.name}</div>
-              <div class="price">$${product.price.toFixed(2)}</div>
+            <div class="order-info">
+              <div class="order-id">Order #${order.orderNumber}</div>
+              <div class="order-date">${date}</div>
+              <div class="order-status ${statusClass}">${order.status || 'Pending'}</div>
+              <div class="order-billing">${billingInfo}</div>
+              <div class="order-cart"><strong>Items:</strong> ${cartItems}</div>
             </div>
-            <div class="actions">
-              <button onclick="editProduct('${id}')">Edit</button>
-              <button onclick="deleteProduct('${id}')">Delete</button>
+            <div class="order-amount">$${order.total.toFixed(2)}</div>
+            <div class="order-actions">
+              ${order.status !== 'Completed' ? `<button onclick="markOrderCompleted('${order.id}')">Mark Completed</button>` : ''}
             </div>
           `;
-          productList.appendChild(div);
+          orderList.appendChild(div);
         });
+        document.getElementById('total-orders').textContent = orders.length;
+      }, (error) => {
+        console.error("Error loading orders:", error);
+        showNotification("Failed to load orders", true);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('authenticated')) {
+        window.location.href = 'login.html';
+        return;
       }
 
-      function updatePreview() {
-        const fileInput = document.getElementById('productImage');
-        const file = fileInput.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            saveProduct(null, document.getElementById('productName').value, parseFloat(document.getElementById('productPrice').value), e.target.result);
-          };
-          reader.readAsDataURL(file);
-        }
-      }
+      const menuToggle = document.querySelector('.menu-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
 
-      document.getElementById('product-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = document.getElementById('productId').value;
-        const name = document.getElementById('productName').value;
-        const price = parseFloat(document.getElementById('productPrice').value);
-        const fileInput = document.getElementById('productImage');
-        const file = fileInput.files[0];
-
-        if (id) {
-          // Editing existing product, only update name and price
-          productsRef.child(id).once('value', (snapshot) => {
-            const existingProduct = snapshot.val();
-            const productData = {
-              name: name,
-              price: price,
-              image: existingProduct.image // Keep the existing image
-            };
-            saveProduct(id, name, price, existingProduct.image);
-          });
-        } else if (file) {
-          // Adding new product with image
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            saveProduct(null, name, price, e.target.result);
-          };
-          reader.readAsDataURL(file);
-        } else {
-          // Adding new product without image
-          saveProduct(null, name, price, null);
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          sidebar.classList.remove('active');
         }
       });
 
-      function saveProduct(id, name, price, image) {
-        const productData = { name, price };
-        if (image) productData.image = image;
+      const navLinks = document.querySelectorAll('.sidebar ul li a');
+      const sections = document.querySelectorAll('.section');
+      const headerTitle = document.getElementById('header-title');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = link.getAttribute('data-section');
+          if (!sectionId && link.textContent.trim() === 'Logout') {
+            logout();
+            return;
+          }
 
-        const ref = id ? productsRef.child(id) : productsRef.push();
-        ref.set(productData)
-          .then(() => {
-            productsCache = null; // Invalidate cache
-            showNotification(id ? 'Product Updated' : 'Product Added'); // Fucking loud and clear
-            clearForm(); // Reset to default
-            loadProducts(); // Refresh immediately
-          })
-          .catch(error => {
-            console.error("Error saving product:", error);
-            showNotification('Error saving product: ' + error.message, true);
-          });
-      }
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
 
-      function editProduct(id) {
-        productsRef.child(id).once('value', (snapshot) => {
-          const product = snapshot.val();
-          document.getElementById('productId').value = id;
-          document.getElementById('productName').value = product.name;
-          document.getElementById('productPrice').value = product.price;
-          document.getElementById('productImage').classList.add('hidden'); // Hide the image input
-        });
-      }
+          sections.forEach(section => section.classList.remove('active'));
+          const targetSection = document.getElementById(sectionId);
+          if (targetSection) {
+            targetSection.classList.add('active');
+            headerTitle.textContent = link.textContent.trim();
+          }
 
-      function deleteProduct(id) {
-        if (confirm('Are you sure you want to delete this product?')) {
-          productsRef.child(id).remove()
-            .then(() => {
-              productsCache = null; // Invalidate cache
-              showNotification('Product Deleted');
-              loadProducts(); // Refresh immediately
-            })
-            .catch(error => showNotification('Error deleting product', true));
-        }
-      }
+          if (sectionId === 'products-section') {
+            loadProducts();
+          } else if (sectionId === 'dashboard-section') {
+            updateDashboardStats();
+          }
 
-      function clearForm() {
-        document.getElementById('product-form').reset();
-        document.getElementById('productId').value = '';
-        document.getElementById('productImage').classList.remove('hidden'); // Show it again for new adds
-      }
-
-      document.querySelector('[data-section="products-section"]').addEventListener('click', loadProducts);
-    </script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        if (!localStorage.getItem('authenticated')) {
-          window.location.href = 'login.html';
-          return;
-        }
-
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        menuToggle.addEventListener('click', () => {
-          sidebar.classList.toggle('active');
-        });
-  
-        document.addEventListener('click', (e) => {
-          if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          if (window.innerWidth <= 750) {
             sidebar.classList.remove('active');
           }
         });
-  
-        const navLinks = document.querySelectorAll('.sidebar ul li a');
-        const sections = document.querySelectorAll('.section');
-        const headerTitle = document.getElementById('header-title');
-        navLinks.forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const sectionId = link.getAttribute('data-section');
-            if (!sectionId && link.textContent.trim() === 'Logout') {
-              logout();
-              return;
-            }
-  
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-  
-            sections.forEach(section => section.classList.remove('active'));
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-              targetSection.classList.add('active');
-              headerTitle.textContent = link.textContent.trim();
-            }
-  
-            if (sectionId === 'products-section') {
-              loadProducts();
-              if (window.innerWidth <= 750) {
-                sidebar.classList.remove('active');
-              }
-            } else if (sectionId === 'dashboard-section') {
-              updateDashboardStats();
-            }
-  
-            if (window.innerWidth <= 750) {
-              sidebar.classList.remove('active');
-            }
-          });
-        });
-  
-        function logout() {
-          localStorage.removeItem("authenticated");
-          window.location.href = "login.html";
-        }
-  
-        function updateDashboardStats() {
-          const totalProducts = document.getElementById('total-products');
-          firebase.database().ref('products').once('value', (snapshot) => {
-            totalProducts.textContent = snapshot.numChildren() || 0;
-          }, (error) => {
-            console.error("Error fetching product count:", error);
-            showNotification("Failed to load product count", true);
-          });
-        }
-  
-        const settingsForm = document.getElementById('settings-form');
-        const passwordRef = firebase.database().ref('settings/password');
-        settingsForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const currentPassword = document.getElementById('currentPassword').value;
-          const newPassword = document.getElementById('newPassword').value;
-          const confirmPassword = document.getElementById('confirmPassword').value;
-  
-          passwordRef.once('value', (snapshot) => {
-            const storedPassword = snapshot.val() || 'admin123';
-            if (currentPassword !== storedPassword) {
-              showNotification('Current password is incorrect', true);
-            } else if (newPassword !== confirmPassword) {
-              showNotification('New passwords do not match', true);
-            } else {
-              passwordRef.set(newPassword)
-                .then(() => {
-                  showNotification('Password updated successfully');
-                  settingsForm.reset();
-                })
-                .catch(error => {
-                  console.error("Error updating password:", error);
-                  showNotification('Error updating password: ' + error.message, true);
-                });
-            }
-          }, (error) => {
-            console.error("Error fetching password:", error);
-            showNotification("Failed to load current password", true);
-          });
-        });
-  
-        function showNotification(message, isError = false) {
-          const notification = document.getElementById('notification');
-          notification.textContent = message;
-          notification.classList.toggle('error', isError);
-          notification.style.display = 'block';
-          notification.style.opacity = '1';
-          setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => notification.style.display = 'none', 500);
-          }, 3000); // Stays visible for 3 seconds
-        }
-  
-        updateDashboardStats();
       });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91cc50216ab82052',t:'MTc0MTM3Mzc4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+      function logout() {
+        localStorage.removeItem("authenticated");
+        window.location.href = "login.html";
+      }
+
+      function updateDashboardStats() {
+        const totalProducts = document.getElementById('total-products');
+        firebase.database().ref('products').once('value', (snapshot) => {
+          totalProducts.textContent = snapshot.numChildren() || 0;
+        }, (error) => {
+          console.error("Error fetching product count:", error);
+          showNotification("Failed to load product count", true);
+        });
+        loadOrders();
+      }
+
+      const settingsForm = document.getElementById('settings-form');
+      const passwordRef = firebase.database().ref('settings/password');
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        passwordRef.once('value', (snapshot) => {
+          const storedPassword = snapshot.val() || 'admin123';
+          if (currentPassword !== storedPassword) {
+            showNotification('Current password is incorrect', true);
+          } else if (newPassword !== confirmPassword) {
+            showNotification('New passwords do not match', true);
+          } else {
+            passwordRef.set(newPassword)
+              .then(() => {
+                showNotification('Password updated successfully');
+                settingsForm.reset();
+              })
+              .catch(error => {
+                console.error("Error updating password:", error);
+                showNotification('Error updating password: ' + error.message, true);
+              });
+          }
+        }, (error) => {
+          console.error("Error fetching password:", error);
+          showNotification("Failed to load current password", true);
+        });
+      });
+
+      function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.classList.toggle('error', isError);
+        notification.style.display = 'block';
+        notification.style.opacity = '1';
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.style.display = 'none', 500);
+        }, 3000);
+      }
+
+      updateDashboardStats();
+    });
+
+    document.querySelector('[data-section="products-section"]').addEventListener('click', loadProducts);
+  </script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91d234d028c7adcc',t:'MTc0MTQzNTU4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
 </html>

