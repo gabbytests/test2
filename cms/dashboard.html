@@ -87,19 +87,6 @@
       font-size: 18px;
       font-weight: 600;
     }
-    .back-to-store {
-      margin-bottom: 0px;
-    }
-    .back-to-store a {
-      text-decoration: none;
-      font-size: 16px;
-      color: #0071e3;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-    .back-to-store a:hover {
-      color: #005bb5;
-    }
     .user-info {
       font-size: 12px;
       color: #666;
@@ -158,6 +145,13 @@
       flex-direction: column;
       gap: 8px;
       max-height: 400px;
+      overflow-y: auto;
+    }
+    .full-order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: calc(100vh - 120px); /* Full height minus header and padding */
       overflow-y: auto;
     }
     .order-item {
@@ -564,6 +558,9 @@
       .order-details .section-title {
         font-size: 16px;
       }
+      .full-order-list {
+        height: calc(100vh - 100px); /* Adjusted for mobile */
+      }
     }
   </style>
 </head>
@@ -573,6 +570,7 @@
       <h2>Racour CMS</h2>
       <ul style="display: flex; flex-direction: column; height: calc(100% - 60px);">
         <li><a href="#" class="active" data-section="dashboard-section">Dashboard</a></li>
+        <li><a href="#" data-section="orders-section">Orders</a></li>
         <li><a href="#" data-section="products-section">Products</a></li>
         <li><a href="#" data-section="settings-section">Settings</a></li>
         <li style="margin-top: auto;"><a href="#" onclick="logout()">Logout</a></li>
@@ -583,9 +581,7 @@
       <div class="header">
         <button class="menu-toggle">☰</button>
         <h1 id="header-title">Dashboard</h1>
-        <div class="back-to-store">
-          <a href="cart.html">← Back to Store</a>
-        </div>
+        <div class="user-info"><span><a href="../index.html">Back To Store</a></span></div>
       </div>
 
       <div class="section dashboard-section active" id="dashboard-section">
@@ -605,6 +601,11 @@
           <h3>Recent Orders</h3>
           <div id="orderList" class="order-list"></div>
         </div>
+      </div>
+
+      <div class="section orders-section" id="orders-section">
+        <h2>All Orders</h2>
+        <div id="fullOrderList" class="full-order-list"></div>
       </div>
 
       <div class="section products-section" id="products-section">
@@ -908,6 +909,48 @@
       });
     }
 
+    function loadAllOrders() {
+      const fullOrderList = document.getElementById('fullOrderList');
+      db.collection('orders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+        fullOrderList.innerHTML = '';
+        const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (orders.length === 0) {
+          fullOrderList.innerHTML = '<p>No orders available.</p>';
+          return;
+        }
+        orders.forEach(order => {
+          const div = document.createElement('div');
+          div.className = 'order-item';
+          const date = order.timestamp ? new Date(order.timestamp.toMillis()).toLocaleString() : 'N/A';
+          const statusClass = order.status ? order.status.toLowerCase() : 'pending';
+
+          const billingInfo = `
+            <strong>Billing:</strong> ${order.billing.fullName}, ${order.billing.email}, ${order.billing.address}, ${order.billing.city}
+          `;
+          const cartItems = order.cart.map(item => `${item.name} x${item.quantity} ($${item.price.toFixed(2)})`).join(', ');
+
+          div.innerHTML = `
+            <div class="order-info">
+              <div class="order-id">Order #${order.orderNumber}</div>
+              <div class="order-date">${date}</div>
+              <div class="order-status ${statusClass}">${order.status || 'Pending'}</div>
+              <div class="order-billing">${billingInfo}</div>
+              <div class="order-cart"><strong>Items:</strong> ${cartItems}</div>
+            </div>
+            <div class="order-amount">$${order.total.toFixed(2)}</div>
+            <div class="order-actions">
+              ${order.status !== 'Completed' ? `<button onclick="markOrderCompleted('${order.id}'); event.stopPropagation();">Mark Completed</button>` : ''}
+            </div>
+          `;
+          div.addEventListener('click', () => showOrderDetails(order));
+          fullOrderList.appendChild(div);
+        });
+      }, (error) => {
+        console.error("Error loading all orders:", error);
+        showNotification("Failed to load orders", true);
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('authenticated')) {
         window.location.href = 'login.html';
@@ -959,6 +1002,8 @@
             loadProducts();
           } else if (sectionId === 'dashboard-section') {
             updateDashboardStats();
+          } else if (sectionId === 'orders-section') {
+            loadAllOrders();
           }
 
           if (window.innerWidth <= 750) {
@@ -1032,5 +1077,5 @@
     document.querySelector('[data-section="products-section"]').addEventListener('click', loadProducts);
   </script>
   <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91d234d028c7adcc',t:'MTc0MTQzNTU4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91d278f36dc5b034',t:'MTc0MTQzODM3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
