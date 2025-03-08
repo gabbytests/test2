@@ -87,6 +87,19 @@
       font-size: 18px;
       font-weight: 600;
     }
+    .back-to-store {
+      margin-bottom: 0px;
+    }
+    .back-to-store a {
+      text-decoration: none;
+      font-size: 16px;
+      color: #0071e3;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .back-to-store a:hover {
+      color: #005bb5;
+    }
     .user-info {
       font-size: 12px;
       color: #666;
@@ -155,6 +168,7 @@
       border: 1px solid #e0e0e0;
       border-radius: 6px;
       transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
     }
     .order-item:hover {
       box-shadow: var(--shadow);
@@ -391,6 +405,64 @@
       cursor: pointer;
       padding: 8px;
     }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    .modal-content h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .modal-content .close-btn {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+    .modal-content .close-btn:hover {
+      color: #333;
+    }
+    .order-details {
+      font-size: 16px;
+      line-height: 1.8;
+    }
+    .order-details strong {
+      color: #333;
+    }
+    .order-details .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+    }
+    .order-details ul {
+      list-style: none;
+      margin-left: 10px;
+    }
+    .order-details ul li {
+      margin-bottom: 8px;
+    }
     @media screen and (max-width: 750px) {
       .sidebar {
         transform: translateX(-100%);
@@ -479,6 +551,19 @@
       .order-amount {
         font-size: 12px;
       }
+      .modal-content {
+        width: 95%;
+        padding: 15px;
+      }
+      .modal-content h2 {
+        font-size: 20px;
+      }
+      .order-details {
+        font-size: 14px;
+      }
+      .order-details .section-title {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -498,7 +583,9 @@
       <div class="header">
         <button class="menu-toggle">☰</button>
         <h1 id="header-title">Dashboard</h1>
-        <div class="user-info"><span><a href="../index.html">Back To Store</a></span></div>
+        <div class="back-to-store">
+          <a href="cart.html">← Back to Store</a>
+        </div>
       </div>
 
       <div class="section dashboard-section active" id="dashboard-section">
@@ -559,6 +646,12 @@
     </div>
 
     <div class="notification" id="notification"></div>
+    <div class="modal" id="orderModal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeOrderModal()">×</span>
+        <div id="orderDetails"></div>
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -648,10 +741,9 @@
       const file = fileInput.files[0];
 
       if (id) {
-        // For editing an existing product
         productsRef.child(id).once('value', (snapshot) => {
           const existingProduct = snapshot.val();
-          const image = file ? null : (existingProduct.image || null); // Use existing image unless a new file is uploaded
+          const image = file ? null : (existingProduct.image || null);
           if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -666,14 +758,12 @@
           showNotification('Error editing product: ' + error.message, true);
         });
       } else if (file) {
-        // For adding a new product with an image
         const reader = new FileReader();
         reader.onload = (e) => {
           saveProduct(null, name, price, e.target.result);
         };
         reader.readAsDataURL(file);
       } else {
-        // For adding a new product without an image
         saveProduct(null, name, price, null);
       }
     });
@@ -737,6 +827,44 @@
       });
     }
 
+    function showOrderDetails(order) {
+      const modal = document.getElementById('orderModal');
+      const orderDetails = document.getElementById('orderDetails');
+      const date = order.timestamp ? new Date(order.timestamp.toMillis()).toLocaleString() : 'N/A';
+
+      orderDetails.innerHTML = `
+        <h2>Order #${order.orderNumber}</h2>
+        <div class="order-details">
+          <p><strong>Status:</strong> <span class="order-status ${order.status ? order.status.toLowerCase() : 'pending'}">${order.status || 'Pending'}</span></p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+          <div class="section-title">Billing Information</div>
+          <p><strong>Name:</strong> ${order.billing.fullName}</p>
+          <p><strong>Email:</strong> ${order.billing.email}</p>
+          <p><strong>Phone:</strong> ${order.billing.phone || 'N/A'}</p>
+          <p><strong>Address:</strong> ${order.billing.address}${order.billing.address2 ? ', ' + order.billing.address2 : ''}</p>
+          <p><strong>City:</strong> ${order.billing.city}</p>
+          <p><strong>State:</strong> ${order.billing.state || 'N/A'}</p>
+          <p><strong>ZIP:</strong> ${order.billing.zip || 'N/A'}</p>
+          <p><strong>Country:</strong> ${order.billing.country || 'N/A'}</p>
+          <div class="section-title">Payment Information</div>
+          <p><strong>Cardholder:</strong> ${order.payment.cardName}</p>
+          <p><strong>Card Number:</strong> ${order.payment.cardNumber.slice(-4).padStart(order.payment.cardNumber.length, '*')}</p>
+          <p><strong>Expiry:</strong> ${order.payment.expiry}</p>
+          <div class="section-title">Items</div>
+          <ul>
+            ${order.cart.map(item => `<li>${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+      modal.style.display = 'flex';
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('orderModal');
+      modal.style.display = 'none';
+    }
+
     function loadOrders() {
       const orderList = document.getElementById('orderList');
       db.collection('orders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
@@ -767,9 +895,10 @@
             </div>
             <div class="order-amount">$${order.total.toFixed(2)}</div>
             <div class="order-actions">
-              ${order.status !== 'Completed' ? `<button onclick="markOrderCompleted('${order.id}')">Mark Completed</button>` : ''}
+              ${order.status !== 'Completed' ? `<button onclick="markOrderCompleted('${order.id}'); event.stopPropagation();">Mark Completed</button>` : ''}
             </div>
           `;
+          div.addEventListener('click', () => showOrderDetails(order));
           orderList.appendChild(div);
         });
         document.getElementById('total-orders').textContent = orders.length;
@@ -794,6 +923,13 @@
       document.addEventListener('click', (e) => {
         if (window.innerWidth <= 750 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
           sidebar.classList.remove('active');
+        }
+      });
+
+      const modal = document.getElementById('orderModal');
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeOrderModal();
         }
       });
 
