@@ -1,31 +1,32 @@
 p{
-    "name": "UPSA",
-    "short_name": "UPSA",
+    "name": "Racour",
+    "short_name": "Racour",
     "description": "Luxury. Quality. Exclusivity.",
-    "start_url": "/test2/index.html",
+    "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
+    "orientation": "portrait",
     "icons": [
       {
-        "src": "/test2/img/icon-192.jng",
+        "src": "/img/icon-192.jng",
         "sizes": "192x192",
         "type": "image/jpg"
       },
       {
-        "src": "/test2/img/icon-512.jpg",
+        "src": "/img/icon-512.jpg",
         "sizes": "512x512",
         "type": "image/jpg"
       }
     ],
     "screenshots": [
       {
-        "src": "/test2/img/screenshot.png",
+        "src": "/img/screenshot.png",
         "sizes": "800x600",
         "type": "image/png"
       }
     ],
-    "scope": "/test2/",
-    "id": "/test2/index.html"
+    "scope": "/",
+    "id": "/index.html"
   }
   
