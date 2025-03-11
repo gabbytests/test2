@@ -8,6 +8,8 @@
     <link rel="canonical" href="index.html">
     <link rel="icon" type="image/png" href="img/logo.png">
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="manifest" href="manifest.json">
+
     <title>Racour Store</title>
   
     <meta name="description" content="Shop with confidence and enjoy a seamless experience—we’re here to bring beauty and charm straight to your doorstep.">
@@ -1933,7 +1935,7 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
 });
 </script>
 
-
+<!--
 <script>
   // Disable right-click
   document.addEventListener('contextmenu', function(e) {
@@ -1949,7 +1951,16 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
       e.preventDefault();
     }
   });
+</script> -->
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch((error) => console.log('Service Worker Registration Failed:', error));
+  }
 </script>
+
 
 
   </body>
