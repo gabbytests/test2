@@ -1,8 +1,37 @@
 {
-  "name": "Racour",
-  "theme_color": "#afadad",
-  "background_color": "#494444",
-  "short_name": "Racour",
-  "id": "racour",
-  "description": "Luxury. Quality. Exclusivity."
+  "name": "Racour Store",
+  "short_name": "racour",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "id": "/index.html",
+  "icons": [
+    {
+      "src": "img/icon-192.png", // Updated to PNG
+      "sizes": "192x192",
+      "type": "image/png",      // Updated MIME type
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512.png", // Add if you have this
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "img/screenshot.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "img/screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
 }

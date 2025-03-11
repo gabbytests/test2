@@ -8,7 +8,9 @@
     <link rel="canonical" href="index.html">
     <link rel="icon" type="image/png" href="img/logo.png">
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000"> <!-- Matches manifest -->
+<link rel="manifest" href="/manifest.json">
 
     <title>Racour Store</title>
   
@@ -1955,9 +1957,11 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
 
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch((error) => console.log('Service Worker Registration Failed:', error));
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered'))
+        .catch(err => console.log('Service Worker failed:', err));
+    });
   }
 </script>
 
